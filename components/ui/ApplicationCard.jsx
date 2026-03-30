@@ -1,63 +1,217 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import OutcomeModal from "@/components/ui/OutcomeModal";
-import CheckIcon from "@/components/icons/CheckIcon";
-import CancelIcon from "@/components/icons/CancelIcon";
-import Button from "./Button";
 
+function HourglassIcon({ className = "" }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      className={className}
+    >
+      <path d="M5 2h14M5 22h14M6 2v4c0 3 6 6 6 6s6-3 6-6V2M6 22v-4c0-3 6-6 6-6s6 3 6 6v4" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className = "" }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      className={className}
+    >
+      <path d="M4 12.5l5.5 5.5L20 7" />
+    </svg>
+  );
+}
+
+function XIcon({ className = "" }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      className={className}
+    >
+      <path d="M5 5l14 14M19 5L5 19" />
+    </svg>
+  );
+}
+
+function DotsIcon({ className = "" }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <circle cx="5" cy="12" r="1.5" />
+      <circle cx="12" cy="12" r="1.5" />
+      <circle cx="19" cy="12" r="1.5" />
+    </svg>
+  );
+}
+
+// --- CIRCULAR PROGRESS ---
+function CircularProgress({ progress, color, icon, size = 52 }) {
+  const stroke = 2.8;
+  const radius = (size - stroke * 2) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (progress / 100) * circumference;
+
+  return (
+    <div
+      className="relative flex items-center justify-center"
+      style={{ width: size, height: size }}
+    >
+      <svg width={size} height={size} className="absolute inset-0 -rotate-90">
+        {/* Track */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#e5e5e5"
+          strokeWidth={stroke}
+        />
+        {/* Progress */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth={stroke}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="butt"
+          style={{ transition: "stroke-dashoffset 0.5s ease" }}
+        />
+      </svg>
+      {/* Icon in center */}
+      <div className="relative z-10 text-neutral-600">{icon}</div>
+    </div>
+  );
+}
+
+// --- RELATIVE DATE ---
+function relativeDate(dateStr) {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "Started today";
+  if (diffDays === 1) return "Started yesterday";
+  return `Started ${date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined })}`;
+}
+
+// --- MAIN COMPONENT ---
 export default function ApplicationCard({ app, onOutcomeLogged }) {
   const [showModal, setShowModal] = useState(false);
-  const total = app.checklist_items.length;
-  const checked = app.checklist_items.filter((i) => i.is_checked).length;
-  const progress = total > 0 ? Math.round((checked / total) * 100) : 0;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  const mandatoryItems = app.checklist_items.filter(
+    (i) => i.requirements?.is_mandatory,
+  );
+  const mandatoryChecked = mandatoryItems.filter((i) => i.is_checked).length;
+  const mandatoryTotal = mandatoryItems.length;
+  const progress =
+    mandatoryTotal > 0
+      ? Math.round((mandatoryChecked / mandatoryTotal) * 100)
+      : 0;
+  const allMandatoryChecked =
+    mandatoryTotal > 0 && mandatoryChecked === mandatoryTotal;
   const country = app.visa_types.countries;
-  const allChecked = progress === 100;
 
-  const badge = (() => {
-    if (app.status === "submitted")
-      return { label: "Submitted", classes: "bg-[#f0faf4] text-brand-green" };
-    if (app.status === "approved") return null;
-    if (app.status === "rejected") return null;
-    if (allChecked)
-      return {
-        label: "Awaiting submission",
-        classes: "bg-neutral-100 text-brand-black",
-      };
-    return { label: "Preparing", classes: "bg-yellow-50 text-yellow-500" };
-  })();
+  // Close menu on outside click
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target))
+        setMenuOpen(false);
+    }
+    if (menuOpen) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuOpen]);
 
-  const barColor = (() => {
-    if (app.status === "submitted") return "bg-brand-green";
-    if (allChecked) return "bg-brand-black";
-    return "bg-yellow-400";
-  })();
+  // Status config
+  const statusConfig = {
+    preparing: {
+      label: "Preparing",
+      color: "	#FACC15",
+      bgClass: "bg-yellow-50 text-yellow-500 border border-yellow-200",
+      icon: <HourglassIcon className="h-4 w-4" />,
+    },
+    submitted: {
+      label: "Submitted",
+      color: "#f97316",
+      bgClass: "bg-orange-50 text-orange-500 border border-orange-200",
+      icon: <HourglassIcon className="h-4 w-4" />,
+    },
+    approved: {
+      label: "Approved",
+      color: "#16a34a",
+      bgClass: "bg-[#f0faf4] text-brand-green border border-[#a3d9b8]",
+      icon: <CheckIcon className="h-4 w-4" />,
+    },
+    rejected: {
+      label: "Rejected",
+      color: "#ef4444",
+      bgClass: "bg-red-50 text-red-500 border border-red-200",
+      icon: <XIcon className="h-4 w-4" />,
+    },
+  };
 
-  const progressTextColor = (() => {
-    if (app.status === "submitted") return "text-brand-green";
-    if (allChecked) return "text-brand-black";
-    return "text-yellow-500";
-  })();
+  const current = statusConfig[app.status];
 
-  const formatDate = (d) =>
-    new Date(d).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+  // Menu items
+  const menuItems = [
+    {
+      label: "View checklist",
+      href: `/dashboard/${app.id}`,
+      disabled: false,
+    },
+    {
+      label: "Mark as submitted",
+      disabled: !allMandatoryChecked || app.status !== "preparing",
+    },
+    {
+      label: "Log outcome",
+      disabled: app.status !== "submitted",
+      onClick: () => {
+        setMenuOpen(false);
+        setShowModal(true);
+      },
+    },
+    {
+      label: "Insights",
+      disabled: true,
+      locked: true,
+    },
+  ];
 
   return (
     <>
-      <div className="card-shadow flex flex-col justify-between rounded-[20px] bg-white px-5 py-4 transition-all duration-200">
-        <div className="mb-8 flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
+      <div className="card-shadow flex flex-col gap-4 rounded-xl bg-white px-5 py-4 transition-all duration-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
             <Image
               src={`https://flagcdn.com/h40/${country.code.toLowerCase()}.png`}
               srcSet={`https://flagcdn.com/h80/${country.code.toLowerCase()}.png 2x, https://flagcdn.com/h120/${country.code.toLowerCase()}.png 3x`}
               width={32}
               height={20}
-              className="mt-1 h-5 w-8 rounded object-cover"
+              className="h-5 w-8 rounded object-cover"
               unoptimized
               alt={country.name}
             />
@@ -65,80 +219,119 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
               <p className="text-sm leading-snug font-semibold text-neutral-800">
                 {country.name}
               </p>
-              <p className="mt-0.5 text-xs text-neutral-500">
-                {app.visa_types.name}
-              </p>
+              <p className="text-xs text-neutral-500">{app.visa_types.name}</p>
             </div>
           </div>
-          {badge && (
+          <div className="flex items-center justify-end gap-6">
+            <CircularProgress
+              progress={progress}
+              color={current.color}
+              icon={current.icon}
+              size={35}
+            />
+
+            {/* Dots menu */}
+            <div ref={menuRef} className="relative">
+              <button
+                onClick={() => setMenuOpen((p) => !p)}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+              >
+                <DotsIcon className="h-6 w-6" />
+              </button>
+
+              {menuOpen && (
+                <div className="absolute top-full right-0 z-50 mt-1 w-48 overflow-hidden rounded-xl border border-black/[0.07] bg-white shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
+                  {menuItems.map((item, i) => (
+                    <div key={i}>
+                      {item.href && !item.disabled ? (
+                        <Link
+                          href={item.href}
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center justify-between px-4 py-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100"
+                        >
+                          {item.label}
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={item.onClick}
+                          disabled={item.disabled}
+                          className={`flex w-full items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors ${
+                            item.disabled
+                              ? "cursor-not-allowed text-neutral-300"
+                              : "text-neutral-700 hover:bg-neutral-50"
+                          }`}
+                        >
+                          <span>{item.label}</span>
+                          {item.locked && (
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-3.5 w-3.5 text-neutral-300"
+                            >
+                              <rect
+                                x="3"
+                                y="11"
+                                width="18"
+                                height="11"
+                                rx="2"
+                              />
+                              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* STATUS BADGE */}
+        <div className="flex items-center gap-2">
+          <span
+            className={`w-fit rounded px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase ${current.bgClass}`}
+          >
+            {current.label}
+          </span>
+          {app.status === "submitted" && (
             <span
-              className={`shrink-0 rounded px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase ${badge.classes}`}
+              onClick={() => setShowModal(true)}
+              className="cursor-pointer text-[11px] text-neutral-500 transition-colors hover:text-neutral-700"
             >
-              {badge.label}
+              Let us know the outcome 🤓
             </span>
+          )}
+          {app.status === "rejected" && !app.rejection_reason && (
+            <span
+              onClick={() => setShowModal(true)}
+              className="cursor-pointer text-[11px] text-neutral-500 transition-colors hover:text-neutral-700"
+            >
+              Tell us why 😓
+            </span>
+          )}
+          {app.status === "approved" && (
+            <span className="text-[11px] text-neutral-500">Bon voyage! 🥳</span>
           )}
         </div>
 
-        {["preparing", "submitted"].includes(app.status) && (
-          <div className="mb-4.5">
-            <div className="mb-2.5 flex items-center justify-between">
-              <div className="items center flex gap-1.5">
-                <span className="text-[11px] text-neutral-400">
-                  {checked} of {total} documents{" "}
-                  {app.status === "submitted" ? "submitted" : "ready"}
-                </span>
-                {app.status === "submitted" && (
-                  <span
-                    onClick={() => setShowModal(true)}
-                    className="text-brand-green hover:text-brand-green cursor-pointer text-[12px] font-bold hover:underline"
-                  >
-                    Log outcome ❯
-                  </span>
-                )}
-              </div>
+        {/* DOCUMENTS COUNT */}
+        <p className="text-[11px] text-neutral-500">
+          <span className="font-semibold text-neutral-800">
+            {mandatoryChecked} of {mandatoryTotal}
+          </span>{" "}
+          mandatory documents gathered
+        </p>
 
-              <span
-                className={`text-[11px] font-semibold ${progressTextColor}`}
-              >
-                {progress}%
-              </span>
-            </div>
-            <div className="h-1 overflow-hidden rounded-full bg-neutral-100">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${barColor}`}
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="flex items-center justify-between">
-          <div>
-            {app.status === "approved" && (
-              <p className="text-brand-green flex items-center gap-1 text-[11px] font-medium">
-                <CheckIcon className="h-3 w-3" />
-                Approved{" "}
-                {app.outcome_at ? `· ${formatDate(app.outcome_at)}` : ""}
-              </p>
-            )}
-            {app.status === "rejected" && (
-              <p className="flex items-center gap-1 text-[11px] font-medium text-red-500">
-                <CancelIcon className="h-3 w-3" />
-                Rejected{" "}
-                {app.outcome_at ? `· ${formatDate(app.outcome_at)}` : ""}
-              </p>
-            )}
-            {app.status !== "approved" && app.status !== "rejected" && (
-              <p className="text-[11px] text-neutral-400">
-                Created {formatDate(app.created_at)}
-              </p>
-            )}
-          </div>
-
-          <Button type="ghost">
-            <Link href={`/dashboard/${app.id}`}>View checklist ❯</Link>
-          </Button>
-        </div>
+        {/* BOTTOM — date */}
+        <p className="text-[11px] text-neutral-400">
+          {relativeDate(app.created_at)}
+        </p>
       </div>
 
       {showModal && (

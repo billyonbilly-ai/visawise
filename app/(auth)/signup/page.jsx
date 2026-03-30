@@ -61,13 +61,25 @@ export default function SignupPage() {
 
     setLoading(true);
     setError("");
-    const { error } = await supabase.auth.signUp({ email, password });
+
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       setError(getFriendlyError(error.message));
       setLoading(false);
       return;
     }
+
+    // If protection is ON and user exists, data.user might be null or
+    // identities array will be empty.
+    const userAlreadyExists = data.user?.identities?.length === 0;
+
+    if (userAlreadyExists) {
+      setError("An account with this email already exists.");
+      setLoading(false);
+      return;
+    }
+
     setStep("verify");
     setLoading(false);
   }
@@ -117,7 +129,7 @@ export default function SignupPage() {
               <input
                 type="email"
                 placeholder="name@example.com"
-                className={`input-base ${error && !email ? "border-red-500" : ""}`}
+                className={`input-base ${error && (error.includes("email") || !email) ? "border-red-500" : ""}`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -129,7 +141,7 @@ export default function SignupPage() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password (8+ characters)"
+                  placeholder="Password (6+ characters)"
                   className={`input-base ${error && password.length < 8 ? "border-red-500" : ""}`}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

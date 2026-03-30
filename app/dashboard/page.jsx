@@ -20,14 +20,20 @@ export default function DashboardPage() {
       .from("applications")
       .select(
         `
-        *,
-        visa_types (
-          name,
-          processing_days,
-          countries ( name, code, flag_emoji )
-        ),
-        checklist_items ( id, is_checked )
-      `,
+      *,
+      visa_types (
+        name,
+        processing_days,
+        countries ( name, code, flag_emoji )
+      ),
+      checklist_items (
+        id,
+        is_checked,
+        requirements (
+          is_mandatory
+        )
+      )
+    `,
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
@@ -48,7 +54,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="px-8 py-8 min-[1200px]:px-38">
+    <div className="px-8 py-8 pb-16 min-[1200px]:px-38">
       {loading ? (
         <Loading />
       ) : (
@@ -75,9 +81,9 @@ export default function DashboardPage() {
           )}
 
           {active.length > 0 && (
-            <div className="mb-8">
-              <p className="mb-3 text-xs font-semibold tracking-widest text-neutral-500 uppercase">
-                Active Applications
+            <div className="mb-20">
+              <p className="mb-5 text-xs font-semibold tracking-widest text-neutral-500 uppercase">
+                Ongoing Applications
               </p>
               <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2">
                 {active.map((app) => (
@@ -93,7 +99,7 @@ export default function DashboardPage() {
 
           {submitted.length > 0 && (
             <div>
-              <p className="mb-3 text-xs font-semibold tracking-widest text-neutral-500 uppercase">
+              <p className="mb-5 text-xs font-semibold tracking-widest text-neutral-500 uppercase">
                 Submitted Applications
               </p>
               <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2">
