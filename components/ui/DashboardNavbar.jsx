@@ -44,7 +44,7 @@ export default function DashboardNavbar({ user }) {
         </button>
 
         {open && (
-          <div className="absolute top-[120%] right-0 z-50 flex w-56 flex-col gap-2 rounded-xl border border-black/9 bg-[#fbfaf8] p-3 shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
+          <div className="bg-brand-background absolute top-[120%] right-0 z-50 flex w-56 flex-col gap-2 rounded-xl border border-black/9 p-3 shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
             <div className="flex flex-col gap-0.5 border-b border-black/6 pb-2">
               <span className="text-brand-black truncate text-sm font-semibold">
                 {emailName}

@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
-import Button from "@/components/Button";
-import ApplicationCard from "@/components/ApplicationCard";
+import Button from "@/components/ui/Button";
+import ApplicationCard from "@/components/ui/ApplicationCard";
 import Loading from "@/app/Loading";
 
 const supabase = createClient();

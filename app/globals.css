@@ -34,6 +34,12 @@
       0 1px 2px -1px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.07);
   }
+
+  .input-base {
+    @apply flex h-10.5 w-full items-center rounded-md border border-neutral-300 bg-white px-3 text-sm transition-all outline-none;
+    @apply focus:border-brand-green focus:ring-brand-green/20 focus:ring-1;
+    @apply disabled:bg-neutral-50 disabled:text-neutral-400;
+  }
 }
 
 .loader {

@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
-import Button from "@/components/Button";
-import HomeNavbar from "@/components/HomeNavbar";
-import CustomSelect from "@/components/CustomSelect";
+import Button from "@/components/ui/Button";
+import HomeNavbar from "@/components/ui/HomeNavbar";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 const supabase = createClient();
 
@@ -143,7 +143,7 @@ function Home() {
                 </div>
               </div>
 
-              <Button className="w-full py-3 text-[16px]" href="/login">
+              <Button className="w-full py-3 text-[16px]" href="/signup">
                 Build my checklist
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

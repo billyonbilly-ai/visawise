@@ -1,5 +1,5 @@
 import Link from "next/link";
-import PlaneIcon from "./icons/PlaneIcon";
+import PlaneIcon from "../icons/PlaneIcon";
 
 export default function Logo({ href = "/" }) {
   return (

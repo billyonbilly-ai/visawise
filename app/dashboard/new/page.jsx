@@ -4,8 +4,8 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import CustomSelect from "@/components/CustomSelect";
-import Button from "@/components/Button";
+import CustomSelect from "@/components/ui/CustomSelect";
+import Button from "@/components/ui/Button";
 
 const supabase = createClient();
 

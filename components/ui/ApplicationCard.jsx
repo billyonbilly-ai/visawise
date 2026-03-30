@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import OutcomeModal from "@/components/OutcomeModal";
+import OutcomeModal from "@/components/ui/OutcomeModal";
 import CheckIcon from "@/components/icons/CheckIcon";
 import CancelIcon from "@/components/icons/CancelIcon";
 import Button from "./Button";

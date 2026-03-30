@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import ChecklistSection from "./ChecklistSection";
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 
 const supabase = createClient();
 

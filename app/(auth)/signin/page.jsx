@@ -8,7 +8,7 @@ import AuthLayout from "@/components/auth/AuthLayout";
 import OtpInput from "@/components/auth/OtpInput";
 import FormAlert from "@/components/auth/FormAlert";
 
-export default function SignupPage() {
+export default function SigninPage() {
   const supabase = createClient();
   const router = useRouter();
 
@@ -18,21 +18,20 @@ export default function SignupPage() {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const otpRefs = useRef([]);
 
-  const [step, setStep] = useState("signup");
+  const [step, setStep] = useState("login");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const getFriendlyError = (msg) => {
     const m = msg.toLowerCase();
-    if (m.includes("already registered") || m.includes("user_already_exists"))
-      return "An account with this email already exists.";
-    if (m.includes("invalid format") || m.includes("valid email"))
-      return "Please enter a valid email address.";
-    if (m.includes("password should contain"))
-      return "Password needs a mix of uppercase, lowercase, numbers, and symbols.";
+    if (m.includes("invalid login credentials"))
+      return "Incorrect email or password.";
+    if (m.includes("too many requests"))
+      return "Too many attempts. Please wait.";
     return msg;
   };
 
+  // OTP handlers same as Signup
   const handleOtpChange = (element, index) => {
     if (isNaN(element.value)) return false;
     const newOtp = [...otp];
@@ -54,22 +53,26 @@ export default function SignupPage() {
     }
   };
 
-  async function handleSignup() {
-    if (!email || !password) return setError("Please fill in all fields.");
-    if (password.length < 8)
-      return setError("Password must be at least 8 characters long.");
-
+  async function handleLogin() {
+    if (!email || !password) return setError("Please enter your details.");
     setLoading(true);
     setError("");
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
-      setError(getFriendlyError(error.message));
+      if (error.message.toLowerCase().includes("email not confirmed")) {
+        await supabase.auth.resend({ type: "signup", email });
+        setStep("verify");
+      } else {
+        setError(getFriendlyError(error.message));
+      }
       setLoading(false);
       return;
     }
-    setStep("verify");
-    setLoading(false);
+    router.push("/dashboard");
   }
 
   async function handleVerify() {
@@ -88,27 +91,21 @@ export default function SignupPage() {
     router.push("/dashboard");
   }
 
-  async function handleResend() {
-    setError("");
-    const { error } = await supabase.auth.resend({ type: "signup", email });
-    if (error) return setError(getFriendlyError(error.message));
-    setError("Code resent — check your email.");
-  }
-
   return (
     <AuthLayout
-      title={step === "signup" ? "Welcome to Visawise" : "Check your email"}
+      isLoginPage
+      title={step === "login" ? "Sign in to Visawise" : "Confirm your email"}
       subtitle={
-        step === "signup"
-          ? "Create a free account to get your personalized visa checklist."
-          : `We sent a code to ${email}.`
+        step === "login"
+          ? "Welcome back! Please enter your details."
+          : `Enter the code sent to ${email}.`
       }
     >
       <fieldset
         disabled={loading}
         className="flex flex-col gap-4 transition-opacity disabled:opacity-60"
       >
-        {step === "signup" ? (
+        {step === "login" ? (
           <>
             <div className="flex flex-col gap-1.5">
               <label className="text-brand-black text-sm font-semibold">
@@ -129,7 +126,7 @@ export default function SignupPage() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password (8+ characters)"
+                  placeholder="Password"
                   className={`input-base ${error && password.length < 8 ? "border-red-500" : ""}`}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -194,40 +191,33 @@ export default function SignupPage() {
 
         <Button
           className="mt-2 w-full py-3"
-          callback={step === "signup" ? handleSignup : handleVerify}
+          callback={step === "login" ? handleLogin : handleVerify}
           loading={loading}
         >
-          {step === "signup" ? "Create account" : "Confirm account"}
+          {step === "login" ? "Sign in" : "Confirm and sign in"}
         </Button>
 
-        {step === "signup" ? (
-          <p className="mt-2 text-center text-sm text-neutral-500">
-            Already have an account?{" "}
-            <Link
-              href="/signin"
-              className="text-brand-black font-semibold hover:underline"
-            >
-              Sign in
-            </Link>
-          </p>
-        ) : (
-          <div className="mt-2 flex flex-col items-center gap-3">
+        <p className="mt-2 text-center text-sm text-neutral-500">
+          {step === "login" ? (
+            <>
+              Don't have an account?{" "}
+              <Link
+                href="/signup"
+                className="text-brand-black font-semibold hover:underline"
+              >
+                Sign up
+              </Link>
+            </>
+          ) : (
             <button
               type="button"
-              onClick={handleResend}
-              className="text-brand-black text-sm font-medium hover:underline"
+              onClick={() => setStep("login")}
+              className="text-xs text-neutral-400 hover:underline"
             >
-              Didn't get a code? Resend
+              Back to login
             </button>
-            <button
-              type="button"
-              onClick={() => setStep("signup")}
-              className="text-xs text-neutral-500 hover:underline"
-            >
-              Use a different email
-            </button>
-          </div>
-        )}
+          )}
+        </p>
       </fieldset>
     </AuthLayout>
   );

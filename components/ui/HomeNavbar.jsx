@@ -29,8 +29,8 @@ export default function HomeNavbar() {
 
         {/* 3. Right: Login Button (Visible only > 1000px) */}
         <div className="hidden flex-1 justify-end min-[1001px]:flex">
-          <Button type="outline" href="/login">
-            Login
+          <Button type="outline" href="/signin">
+            Log in
           </Button>
         </div>
 
@@ -67,7 +67,7 @@ export default function HomeNavbar() {
 
       {/* Sidebar (Mobile Only) */}
       <div
-        className={`fixed top-0 right-0 z-70 h-full bg-[#fbfaf8] shadow-2xl transition-transform duration-300 ease-in-out min-[1001px]:hidden ${
+        className={`bg-brand-background fixed top-0 right-0 z-70 h-full shadow-2xl transition-transform duration-300 ease-in-out min-[1001px]:hidden ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } w-full md:w-1/2`}
       >
@@ -109,7 +109,7 @@ export default function HomeNavbar() {
             <div className="pt-2">
               <Button
                 type="outline"
-                href="/login"
+                href="/signin"
                 className="w-full"
                 onClick={toggleSidebar}
               >
