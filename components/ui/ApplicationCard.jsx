@@ -120,6 +120,8 @@ function relativeDate(dateStr) {
 export default function ApplicationCard({ app, onOutcomeLogged }) {
   const [showModal, setShowModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [modalStep, setModalStep] = useState("outcome");
+
   const menuRef = useRef(null);
 
   const mandatoryItems = app.checklist_items.filter(
@@ -301,7 +303,10 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
           </span>
           {app.status === "submitted" && (
             <span
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setModalStep("outcome");
+                setShowModal(true);
+              }}
               className="text-brand-black hover:text-brand-green cursor-pointer text-[11px] transition-colors"
             >
               Let us know the outcome 🤓
@@ -309,7 +314,10 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
           )}
           {app.status === "rejected" && !app.rejection_reason && (
             <span
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setModalStep("rejection");
+                setShowModal(true);
+              }}
               className="text-brand-black hover:text-brand-green cursor-pointer text-[11px] transition-colors"
             >
               Tell us why 😓
@@ -337,6 +345,7 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
       {showModal && (
         <OutcomeModal
           application={app}
+          initialStep={modalStep}
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);

@@ -350,31 +350,33 @@ export default function ChecklistClient({ application, initialItems }) {
             {/* Submit section — only for preparing/submitted */}
             {(status === "preparing" || status === "submitted") && (
               <div className="">
-                <div className="mb-3 flex items-center gap-3">
-                  <div>
-                    <h2 className="mb-2 text-sm font-semibold text-neutral-800">
-                      {status !== "submitted" && allMandatoryChecked
-                        ? "All mandatory documents gathered 🎉"
-                        : status === "submitted"
-                          ? "Application Submitted, fingers crossed"
-                          : "Almost there"}
-                    </h2>
-                    <p className="mb-3.5 text-sm text-neutral-500">
-                      {status === "submitted"
-                        ? `Submitted on ${formatDate(submittedAt)}`
-                        : allMandatoryChecked
-                          ? "Proceed to submit your application at the embassy and mark it as submitted here."
-                          : `${mandatoryTotal - mandatoryChecked} mandatory document${mandatoryTotal - mandatoryChecked !== 1 ? "s" : ""} remaining`}
-                    </p>
-                    {status === "submitted" &&
-                      application.visa_types.processing_days && (
-                        <p className="text-xs leading-relaxed text-neutral-500">
-                          Average processing time for this visa is{" "}
-                          {application.visa_types.processing_days} days.
-                        </p>
-                      )}
+                {!showOutcomeForm && (
+                  <div className="mb-3 flex items-center gap-3">
+                    <div>
+                      <h2 className="mb-2 text-sm font-semibold text-neutral-800">
+                        {status !== "submitted" && allMandatoryChecked
+                          ? "All mandatory documents gathered 🎉"
+                          : status === "submitted"
+                            ? "Application Submitted, fingers crossed."
+                            : "Almost there"}
+                      </h2>
+                      <p className="mb-3.5 text-sm text-neutral-500">
+                        {status === "submitted"
+                          ? `Submitted on ${formatDate(submittedAt)}`
+                          : allMandatoryChecked
+                            ? "Once you’ve officially submitted your application, mark it as submitted here so we can help you track the wait time."
+                            : `${mandatoryTotal - mandatoryChecked} mandatory document${mandatoryTotal - mandatoryChecked !== 1 ? "s" : ""} remaining`}
+                      </p>
+                      {status === "submitted" &&
+                        application.visa_types.processing_days && (
+                          <p className="text-xs leading-relaxed text-neutral-500">
+                            Average processing time for this visa is{" "}
+                            {application.visa_types.processing_days} days.
+                          </p>
+                        )}
+                    </div>
                   </div>
-                </div>
+                )}
                 {allMandatoryChecked && status !== "submitted" && (
                   <Button
                     type="primary"
@@ -382,19 +384,7 @@ export default function ChecklistClient({ application, initialItems }) {
                     loading={loading}
                     className="w-full"
                   >
-                    Mark as submitted{" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      className="size-4"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    Mark as submitted
                   </Button>
                 )}
               </div>
@@ -414,8 +404,8 @@ export default function ChecklistClient({ application, initialItems }) {
               {status === "submitted" && !showOutcomeForm && (
                 <>
                   <p className="text-brand-black mb-4 text-sm">
-                    When you hear back from the embassy, We would love to know
-                    the outcome 🤓. <br /> Was your application:
+                    Help other travelers by sharing your outcome. Was your
+                    application:
                   </p>
                   <div className="flex gap-2">
                     <button

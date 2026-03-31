@@ -1,14 +1,21 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-
 import CheckIcon from "@/components/icons/CheckIcon";
 import CancelIcon from "@/components/icons/CancelIcon";
+import Button from "@/components/ui/Button";
 
 const supabase = createClient();
 
-export default function OutcomeModal({ application, onClose, onSuccess }) {
+export default function OutcomeModal({
+  application,
+  onClose,
+  onSuccess,
+  initialStep = "outcome",
+}) {
+  const [step, setStep] = useState(initialStep);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [outcomeAt, setOutcomeAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const overlayRef = useRef(null);
@@ -21,6 +28,13 @@ export default function OutcomeModal({ application, onClose, onSuccess }) {
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
+  const formatDate = (d) =>
+    new Date(d).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
   async function handleLogOutcome(outcome) {
     setLoading(true);
     setError("");
@@ -32,17 +46,26 @@ export default function OutcomeModal({ application, onClose, onSuccess }) {
         ? { rejection_reason: rejectionReason }
         : {}),
     };
+
     const { error } = await supabase
       .from("applications")
       .update(updates)
       .eq("id", application.id);
+
     if (error) {
       setError(error.message);
       setLoading(false);
       return;
     }
+
+    setOutcomeAt(now);
     setLoading(false);
-    onSuccess();
+
+    if (outcome === "approved") {
+      setStep("approved");
+    } else {
+      onSuccess();
+    }
   }
 
   return (
@@ -51,11 +74,17 @@ export default function OutcomeModal({ application, onClose, onSuccess }) {
       onClick={(e) => e.target === overlayRef.current && onClose()}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
     >
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 text-left shadow-xl">
         {/* Header */}
         <div className="mb-5 flex items-start justify-between">
           <div>
-            <h2 className="text-brand-black text-lg font-bold">Log outcome</h2>
+            <h2 className="text-brand-black text-lg font-bold">
+              {step === "rejection"
+                ? "Tell us why 😓"
+                : step === "approved"
+                  ? "Congratulations 🥳"
+                  : "Log outcome"}
+            </h2>
             <p className="mt-0.5 text-xs text-neutral-500">
               {application.visa_types.countries.name} —{" "}
               {application.visa_types.name}
@@ -69,52 +98,84 @@ export default function OutcomeModal({ application, onClose, onSuccess }) {
           </button>
         </div>
 
-        {/* Approved */}
-        <div className="mb-4 rounded-xl border border-[#a3d9b8] bg-[#f0faf4] p-4">
-          <p className="text-brand-black mb-3 text-sm font-semibold">
-            Was your visa approved?
-          </p>
-          <button
-            onClick={() => handleLogOutcome("approved")}
-            disabled={loading}
-            className="bg-brand-green flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-          >
-            <CheckIcon className="h-4 w-4" />
-            Yes, approved
-          </button>
-        </div>
+        {/* STEP 1 — outcome buttons */}
+        {step === "outcome" && (
+          <>
+            <p className="text-brand-black mb-4 text-sm">
+              Help other travelers by sharing your outcome. Was your
+              application:
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleLogOutcome("approved")}
+                disabled={loading}
+                className="text-brand-green flex-1 rounded-lg border border-[#a3d9b8] bg-[#f0faf4] p-2 text-sm transition-colors duration-400 hover:bg-[#cbf4db]"
+              >
+                Approved
+              </button>
+              <button
+                onClick={() => setStep("rejection")}
+                disabled={loading}
+                className="flex-1 rounded-lg border border-red-200 bg-red-50 p-2 text-sm text-red-500 transition-colors duration-400 hover:bg-red-100"
+              >
+                Rejected
+              </button>
+            </div>
+          </>
+        )}
 
-        {/* Divider */}
-        <div className="mb-4 flex items-center gap-3">
-          <hr className="flex-1 border-neutral-200" />
-          <span className="text-xs text-neutral-400">or</span>
-          <hr className="flex-1 border-neutral-200" />
-        </div>
+        {/* STEP 2 — rejection reason */}
+        {step === "rejection" && (
+          <div className="flex flex-col gap-3">
+            <p className="text-xs leading-relaxed text-neutral-500">
+              Adding the reason helps other Visawise users prepare better.
+            </p>
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="e.g. Section 214(b) — insufficient ties to Nigeria"
+              rows={3}
+              className="focus:border-brand-green w-full resize-none rounded-md border border-neutral-200 bg-white px-3 py-2.5 text-sm transition-colors outline-none"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleLogOutcome("rejected")}
+                disabled={loading}
+                className="flex-1 rounded-lg border border-red-200 bg-red-50 p-2 text-sm text-red-500 transition-colors duration-400 hover:bg-red-100"
+              >
+                Submit
+              </button>
+              {initialStep !== "rejection" && (
+                <Button
+                  type="outline"
+                  callback={() => setStep("outcome")}
+                  disabled={loading}
+                  className="flex-1"
+                >
+                  Back
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
 
-        {/* Rejected */}
-        <div className="rounded-xl border border-red-100 bg-red-50 p-4">
-          <p className="text-brand-black mb-1 text-sm font-semibold">
-            Was it rejected?
-          </p>
-          <p className="mb-3 text-xs leading-relaxed text-neutral-500">
-            Adding the reason helps other Visawise users prepare better.
-          </p>
-          <textarea
-            value={rejectionReason}
-            onChange={(e) => setRejectionReason(e.target.value)}
-            placeholder="e.g. Section 214(b) — insufficient ties to Nigeria"
-            rows={3}
-            className="focus:border-brand-green mb-3 w-full resize-none rounded-md border border-neutral-200 bg-white px-3 py-2.5 text-sm transition-colors outline-none"
-          />
-          <button
-            onClick={() => handleLogOutcome("rejected")}
-            disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-500 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-          >
-            <CancelIcon className="h-4 w-4" />
-            Rejected
-          </button>
-        </div>
+        {/* SUCCESS STEP — Approved message */}
+        {step === "approved" && (
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-semibold text-neutral-800">
+              Visa approved.
+            </p>
+            <p className="text-xs text-neutral-500">
+              Approved on {formatDate(outcomeAt)}
+            </p>
+            <p className="mt-1 text-sm text-neutral-600">
+              Wishing you safe travels!
+            </p>
+            <Button type="outline" callback={onSuccess} className="mt-4 w-full">
+              Close
+            </Button>
+          </div>
+        )}
 
         {error && <p className="mt-3 text-xs text-red-500">{error}</p>}
       </div>
