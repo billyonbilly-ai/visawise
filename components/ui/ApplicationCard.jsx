@@ -10,9 +10,7 @@ function HourglassIcon({ className = "" }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
+      strokeWidth="2.2"
       className={className}
     >
       <path d="M5 2h14M5 22h14M6 2v4c0 3 6 6 6 6s6-3 6-6V2M6 22v-4c0-3 6-6 6-6s6 3 6 6v4" />
@@ -26,9 +24,7 @@ function CheckIcon({ className = "" }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
+      strokeWidth="3"
       className={className}
     >
       <path d="M4 12.5l5.5 5.5L20 7" />
@@ -42,9 +38,7 @@ function XIcon({ className = "" }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
+      strokeWidth="3"
       className={className}
     >
       <path d="M5 5l14 14M19 5L5 19" />
@@ -63,7 +57,7 @@ function DotsIcon({ className = "" }) {
 }
 
 // --- CIRCULAR PROGRESS ---
-function CircularProgress({ progress, color, icon, size = 52 }) {
+function CircularProgress({ progress, color, bg, icon, size = 52 }) {
   const stroke = 2.8;
   const radius = (size - stroke * 2) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -75,13 +69,15 @@ function CircularProgress({ progress, color, icon, size = 52 }) {
       style={{ width: size, height: size }}
     >
       <svg width={size} height={size} className="absolute inset-0 -rotate-90">
+        {/* Fill Background */}
+        <circle cx={size / 2} cy={size / 2} r={radius} fill={bg} />
         {/* Track */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#e5e5e5"
+          stroke="#f5f5f5"
           strokeWidth={stroke}
         />
         {/* Progress */}
@@ -94,12 +90,14 @@ function CircularProgress({ progress, color, icon, size = 52 }) {
           strokeWidth={stroke}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          strokeLinecap="butt"
+          strokeLinecap="round"
           style={{ transition: "stroke-dashoffset 0.5s ease" }}
         />
       </svg>
-      {/* Icon in center */}
-      <div className="relative z-10 text-neutral-600">{icon}</div>
+      {/* Icon in center - inherits the progress color */}
+      <div className="relative z-10" style={{ color: color }}>
+        {icon}
+      </div>
     </div>
   );
 }
@@ -137,7 +135,6 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
     mandatoryTotal > 0 && mandatoryChecked === mandatoryTotal;
   const country = app.visa_types.countries;
 
-  // Close menu on outside click
   useEffect(() => {
     function handleClickOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target))
@@ -147,37 +144,40 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
-  // Status config
+  // Status config with matching light backgrounds
   const statusConfig = {
     preparing: {
       label: "Preparing",
-      color: "	#FACC15",
-      bgClass: "bg-yellow-50 text-yellow-500 border border-yellow-200",
-      icon: <HourglassIcon className="h-4 w-4" />,
+      color: "#eab308",
+      bgColor: "#fefce8",
+      bgClass: "bg-yellow-50 text-yellow-600 border border-yellow-200",
+      icon: <HourglassIcon className="h-4.5 w-4.5" />,
     },
     submitted: {
       label: "Submitted",
       color: "#f97316",
+      bgColor: "#fff7ed",
       bgClass: "bg-orange-50 text-orange-500 border border-orange-200",
-      icon: <HourglassIcon className="h-4 w-4" />,
+      icon: <HourglassIcon className="h-4.5 w-4.5" />,
     },
     approved: {
       label: "Approved",
       color: "#16a34a",
+      bgColor: "#f0faf4",
       bgClass: "bg-[#f0faf4] text-brand-green border border-[#a3d9b8]",
-      icon: <CheckIcon className="h-4 w-4" />,
+      icon: <CheckIcon className="h-5 w-5" />,
     },
     rejected: {
       label: "Rejected",
       color: "#ef4444",
+      bgColor: "#fef2f2",
       bgClass: "bg-red-50 text-red-500 border border-red-200",
-      icon: <XIcon className="h-4 w-4" />,
+      icon: <XIcon className="h-5 w-5" />,
     },
   };
 
   const current = statusConfig[app.status];
 
-  // Menu items
   const menuItems = [
     {
       label: "View checklist",
@@ -228,17 +228,17 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
             <CircularProgress
               progress={progress}
               color={current.color}
+              bg={current.bgColor}
               icon={current.icon}
-              size={35}
+              size={36}
             />
 
-            {/* Dots menu */}
             <div ref={menuRef} className="relative">
               <button
                 onClick={() => setMenuOpen((p) => !p)}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
               >
-                <DotsIcon className="h-6 w-6" />
+                <DotsIcon className="text-brand-gray h-7 w-7" />
               </button>
 
               {menuOpen && (
@@ -294,10 +294,9 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
           </div>
         </div>
 
-        {/* STATUS BADGE */}
         <div className="flex items-center gap-2">
           <span
-            className={`w-fit rounded px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase ${current.bgClass}`}
+            className={`w-fit rounded px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${current.bgClass}`}
           >
             {current.label}
           </span>
@@ -328,7 +327,6 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
           )}
         </div>
 
-        {/* DOCUMENTS COUNT */}
         <p className="text-[11px] text-neutral-500">
           <span className="font-semibold text-neutral-800">
             {mandatoryChecked} of {mandatoryTotal}
@@ -336,7 +334,6 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
           mandatory documents gathered
         </p>
 
-        {/* BOTTOM — date */}
         <p className="text-[11px] text-neutral-400">
           {relativeDate(app.created_at)}
         </p>
