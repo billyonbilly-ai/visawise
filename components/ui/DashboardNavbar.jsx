@@ -27,7 +27,7 @@ export default function DashboardNavbar({ user }) {
   }
 
   return (
-    <nav className="flex w-full items-center justify-between border-b border-black/6 px-8 py-4 min-[1200px]:px-38">
+    <nav className="flex w-full items-center justify-between border-b border-black/6 px-3 py-4 min-[1200px]:px-38">
       <Logo href="/dashboard" />
 
       <div ref={ref} className="relative">

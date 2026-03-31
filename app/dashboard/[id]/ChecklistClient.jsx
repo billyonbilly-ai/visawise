@@ -237,8 +237,27 @@ export default function ChecklistClient({ application, initialItems }) {
     setLoading(false);
   }
 
+  const checklistContent = (
+    <>
+      <ChecklistSection
+        sectionItems={mandatoryItems}
+        label="Required documents"
+        status={status}
+        onToggle={toggleItem}
+      />
+      {optionalItems.length > 0 && (
+        <ChecklistSection
+          sectionItems={optionalItems}
+          label="Optional but recommended"
+          status={status}
+          onToggle={toggleItem}
+        />
+      )}
+    </>
+  );
+
   return (
-    <div className="px-8 py-8 min-[1200px]:px-38">
+    <div className="px-3 py-8 min-[1200px]:px-38">
       {/* Back button */}
       <Link href="/dashboard">
         <Button type="outline">
@@ -258,17 +277,15 @@ export default function ChecklistClient({ application, initialItems }) {
         </Button>
       </Link>
 
-      {/* Two column layout */}
-      <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
-        {/* LEFT — header card + checklist */}
-        <div className="w-full lg:w-1/2">
-          {/* Header card */}
-          <div className="card-shadow flex flex-col gap-4 rounded-lg bg-white px-5 py-4">
+      <div className="mt-6 flex flex-col gap-6 min-[941px]:flex-row min-[941px]:items-start">
+        {/* LEFT — Info card */}
+        <div className="w-full min-[941px]:w-1/2">
+          <div className="card-shadow flex flex-col gap-4 rounded-lg bg-white px-3 py-3 sm:px-5 sm:py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Image
                   src={`https://flagcdn.com/h40/${country.code.toLowerCase()}.png`}
-                  srcSet={`https://flagcdn.com/h80/${country.code.toLowerCase()}.png 2x, https://flagcdn.com/h120/${country.code.toLowerCase()}.png 3x`}
+                  srcSet={`https://flagcdn.com/h80/${country.code.toLowerCase()}.png 2x`}
                   width={32}
                   height={20}
                   className="h-5 w-8 rounded object-cover"
@@ -284,7 +301,8 @@ export default function ChecklistClient({ application, initialItems }) {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              {/* Stacked by default (mobile), row on small-medium screens */}
+              <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
                 <CircularProgress
                   progress={progress}
                   color={current.color}
@@ -301,7 +319,6 @@ export default function ChecklistClient({ application, initialItems }) {
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-neutral-500">
                 {mandatoryChecked} of {mandatoryTotal} mandatory documents
-                gathered
               </span>
               <span
                 className="text-xs font-bold"
@@ -310,70 +327,42 @@ export default function ChecklistClient({ application, initialItems }) {
                 {progress}%
               </span>
             </div>
-            {/* <div className="h-1 overflow-hidden bg-neutral-200">
-              <div
-                className="h-full transition-all duration-500"
-                style={{
-                  width: `${progress}%`,
-                  backgroundColor: current.color,
-                }}
-              />
-            </div> */}
           </div>
-          {error && (
-            <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-              {error}
-            </div>
-          )}
-          {/* Checklist */}
-          <div className="mt-6">
-            <ChecklistSection
-              sectionItems={mandatoryItems}
-              label="Required documents"
-              status={status}
-              onToggle={toggleItem}
-            />
-            {optionalItems.length > 0 && (
-              <ChecklistSection
-                sectionItems={optionalItems}
-                label="Optional but recommended"
-                status={status}
-                onToggle={toggleItem}
-              />
+
+          <div className="mt-6 hidden min-[941px]:block">
+            {error && (
+              <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                {error}
+              </div>
             )}
+            {checklistContent}
           </div>
         </div>
 
-        {/* RIGHT — action panel */}
-        <div className="w-full lg:w-1/2">
-          <div className="card-shadow rounded-lg bg-white px-5 py-5">
-            {/* Submit section — only for preparing/submitted */}
+        {/* RIGHT — Action panel */}
+        <div className="w-full min-[941px]:w-1/2">
+          <div className="card-shadow rounded-lg bg-white px-3 py-3 sm:px-5 sm:py-5">
             {(status === "preparing" || status === "submitted") && (
-              <div className="">
+              <div>
                 {!showOutcomeForm && (
-                  <div className="mb-3 flex items-center gap-3">
+                  <div className="flex items-center gap-3">
                     <div>
                       <h2 className="mb-2 text-sm font-semibold text-neutral-800">
-                        {status !== "submitted" && allMandatoryChecked
-                          ? "All mandatory documents gathered 🎉"
-                          : status === "submitted"
-                            ? "Application Submitted, fingers crossed."
-                            : "Almost there"}
+                        {status === "submitted"
+                          ? "Application Submitted, fingers crossed."
+                          : allMandatoryChecked
+                            ? "All mandatory documents gathered 🎉"
+                            : mandatoryChecked === 0
+                              ? "Start by checking off the documents"
+                              : "You're making progress"}
                       </h2>
                       <p className="mb-3.5 text-sm text-neutral-500">
                         {status === "submitted"
                           ? `Submitted on ${formatDate(submittedAt)}`
                           : allMandatoryChecked
-                            ? "Once you’ve officially submitted your application, mark it as submitted here so we can help you track the wait time."
-                            : `${mandatoryTotal - mandatoryChecked} mandatory document${mandatoryTotal - mandatoryChecked !== 1 ? "s" : ""} remaining`}
+                            ? "Mark it as submitted here to track wait time."
+                            : `${mandatoryTotal - mandatoryChecked} documents remaining`}
                       </p>
-                      {status === "submitted" &&
-                        application.visa_types.processing_days && (
-                          <p className="text-xs leading-relaxed text-neutral-500">
-                            Average processing time for this visa is{" "}
-                            {application.visa_types.processing_days} days.
-                          </p>
-                        )}
                     </div>
                   </div>
                 )}
@@ -390,7 +379,6 @@ export default function ChecklistClient({ application, initialItems }) {
               </div>
             )}
 
-            {/* Outcome section */}
             <div
               className={
                 status !== "submitted" &&
@@ -400,7 +388,6 @@ export default function ChecklistClient({ application, initialItems }) {
                   : ""
               }
             >
-              {/* Not yet logged */}
               {status === "submitted" && !showOutcomeForm && (
                 <>
                   <p className="text-brand-black mb-4 text-sm">
@@ -426,19 +413,15 @@ export default function ChecklistClient({ application, initialItems }) {
                 </>
               )}
 
-              {/* Rejection reason form */}
               {status === "submitted" && showOutcomeForm && (
                 <div className="flex flex-col gap-3">
                   <p className="text-sm font-semibold text-neutral-700">
                     Tell us why 😓
                   </p>
-                  <p className="text-xs leading-relaxed text-neutral-500">
-                    Adding the reason helps other Visawise users prepare better.
-                  </p>
                   <textarea
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
-                    placeholder="e.g. Section 214(b) — insufficient ties to Nigeria"
+                    placeholder="e.g. Section 214(b) — insufficient ties"
                     rows={3}
                     className="focus:border-brand-green w-full resize-none rounded-md border border-neutral-200 bg-white px-3 py-2.5 text-sm transition-colors outline-none"
                   />
@@ -462,7 +445,6 @@ export default function ChecklistClient({ application, initialItems }) {
                 </div>
               )}
 
-              {/* Approved */}
               {status === "approved" && (
                 <div className="flex flex-col gap-2">
                   <p className="text-sm font-semibold text-neutral-800">
@@ -471,13 +453,9 @@ export default function ChecklistClient({ application, initialItems }) {
                   <p className="text-xs text-neutral-500">
                     Approved on {formatDate(outcomeAt)}
                   </p>
-                  <p className="mt-1 text-sm text-neutral-600">
-                    Congratulations. Safe travels!
-                  </p>
                 </div>
               )}
 
-              {/* Rejected */}
               {status === "rejected" && (
                 <div className="flex flex-col gap-2">
                   <p className="text-sm font-semibold text-neutral-800">
@@ -486,11 +464,6 @@ export default function ChecklistClient({ application, initialItems }) {
                   <p className="text-xs text-neutral-500">
                     Rejected on {formatDate(outcomeAt)}
                   </p>
-                  {rejectionReason && (
-                    <p className="mt-1 text-sm text-neutral-600">
-                      Reason: {rejectionReason}
-                    </p>
-                  )}
                   <Link
                     href="/dashboard/new"
                     className="text-brand-green mt-2 text-sm font-semibold hover:underline"
@@ -500,6 +473,15 @@ export default function ChecklistClient({ application, initialItems }) {
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="mt-6 min-[941px]:hidden">
+            {error && (
+              <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                {error}
+              </div>
+            )}
+            {checklistContent}
           </div>
         </div>
       </div>
