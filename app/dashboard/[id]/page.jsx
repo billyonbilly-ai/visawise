@@ -10,7 +10,7 @@ export default async function ApplicationPage({ params }) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/signin");
 
   const { data: application } = await supabase
     .from("applications")

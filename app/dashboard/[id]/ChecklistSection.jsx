@@ -5,11 +5,9 @@ export default function ChecklistSection({
   onToggle,
 }) {
   return (
-    <div className="mb-6">
-      <p className="mb-3 text-xs font-semibold tracking-widest text-neutral-400 uppercase">
-        {label}
-      </p>
-      <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white">
+    <div className="mb-20">
+      <p className="text-brand-black mb-5 text-sm font-semibold">{label}</p>
+      <div className="card-shadow overflow-hidden rounded-xl bg-white">
         {sectionItems.map((item, index) => (
           <div
             key={item.id}
@@ -17,7 +15,7 @@ export default function ChecklistSection({
             className={`flex items-start gap-3 px-5 py-4 transition-colors ${index !== sectionItems.length - 1 ? "border-b border-neutral-100" : ""} ${status === "preparing" ? "cursor-pointer hover:bg-neutral-50" : "cursor-default opacity-60"} `}
           >
             <div
-              className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-all ${item.is_checked ? "bg-brand-green border-brand-green" : "border-neutral-300 bg-white"}`}
+              className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-all ${item.is_checked ? "bg-brand-black border-brand-black" : "border-neutral-300 bg-white"}`}
             >
               {item.is_checked && (
                 <svg

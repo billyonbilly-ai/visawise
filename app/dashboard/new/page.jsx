@@ -181,7 +181,7 @@ export default function NewApplicationPage() {
         </Link>
 
         <div className="card-shadow mt-7.5 flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
-          <div className="font-bold">Create a new visa checklist</div>
+          <div className="font-bold">Let's build your checklist</div>
 
           {/* This fieldset disables all nested inputs when loading is true */}
           <fieldset

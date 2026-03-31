@@ -302,7 +302,7 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
           {app.status === "submitted" && (
             <span
               onClick={() => setShowModal(true)}
-              className="cursor-pointer text-[11px] text-neutral-500 transition-colors hover:text-neutral-700"
+              className="text-brand-black hover:text-brand-green cursor-pointer text-[11px] transition-colors"
             >
               Let us know the outcome 🤓
             </span>
@@ -310,13 +310,13 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
           {app.status === "rejected" && !app.rejection_reason && (
             <span
               onClick={() => setShowModal(true)}
-              className="cursor-pointer text-[11px] text-neutral-500 transition-colors hover:text-neutral-700"
+              className="text-brand-black hover:text-brand-green cursor-pointer text-[11px] transition-colors"
             >
               Tell us why 😓
             </span>
           )}
           {app.status === "approved" && (
-            <span className="text-[11px] text-neutral-500">Bon voyage! 🥳</span>
+            <span className="text-brand-black text-[11px]">Bon voyage! 🥳</span>
           )}
         </div>
 

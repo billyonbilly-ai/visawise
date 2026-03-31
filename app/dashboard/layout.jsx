@@ -8,7 +8,7 @@ export default async function DashboardLayout({ children }) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/signin");
 
   return (
     <div className="min-h-screen">

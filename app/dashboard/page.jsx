@@ -82,10 +82,8 @@ export default function DashboardPage() {
 
           {active.length > 0 && (
             <div className="mb-20">
-              <p className="mb-5 text-xs font-semibold tracking-widest text-neutral-500 uppercase">
-                Ongoing Applications
-              </p>
-              <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2">
+              <p className="mb-5 text-sm font-semibold">Ongoing Applications</p>
+              <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2 min-[1490px]:grid-cols-3">
                 {active.map((app) => (
                   <ApplicationCard
                     key={app.id}
@@ -99,10 +97,10 @@ export default function DashboardPage() {
 
           {submitted.length > 0 && (
             <div>
-              <p className="mb-5 text-xs font-semibold tracking-widest text-neutral-500 uppercase">
+              <p className="mb-5 text-sm font-semibold">
                 Submitted Applications
               </p>
-              <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2 min-[1490px]:grid-cols-3">
                 {submitted.map((app) => (
                   <ApplicationCard
                     key={app.id}
