@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 
 const steps = [
@@ -6,7 +7,7 @@ const steps = [
     image: "/step1.png",
     title: "Create a Visawise account",
     description:
-      "Sign up in seconds with just your email. No lengthy forms, no unnecessary details — just create your account and you're in.",
+      "Sign up in seconds with your email and password to get started. No lengthy forms, no unnecessary details. Just create your account and you're in.",
   },
   {
     number: "2",
@@ -36,13 +37,10 @@ export default function HowItWorks() {
         </h2>
       </div>
 
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+      <div className="flex flex-col gap-8 px-12 sm:px-38 md:px-60 lg:flex-row lg:items-center lg:gap-8 lg:px-0">
         {steps.map((step, index) => (
-          <>
-            <div
-              key={step.number}
-              className="card-shadow flex flex-col overflow-hidden rounded-2xl bg-white md:flex-1"
-            >
+          <React.Fragment key={step.number}>
+            <div className="card-shadow flex flex-1 flex-col overflow-hidden rounded-2xl bg-white">
               <div className="m-3 overflow-hidden rounded-xl bg-neutral-100">
                 <Image
                   src={step.image}
@@ -65,13 +63,13 @@ export default function HowItWorks() {
             {index < steps.length - 1 && (
               <div
                 key={`arrow-${index}`}
-                className="hidden shrink-0 items-center justify-center md:flex"
+                className="flex shrink-0 items-center justify-center py-2 lg:block lg:py-0"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 16 16"
                   fill="currentColor"
-                  className="h-4 w-4 text-neutral-400"
+                  className="h-5 w-5 rotate-90 text-neutral-400 lg:rotate-0"
                 >
                   <path
                     fillRule="evenodd"
@@ -81,7 +79,7 @@ export default function HowItWorks() {
                 </svg>
               </div>
             )}
-          </>
+          </React.Fragment>
         ))}
       </div>
     </section>
