@@ -4,6 +4,7 @@ import DemoSection from "@/components/sections/DemoSection";
 import HowItWorks from "@/components/sections/HowItWorks";
 import FAQ from "@/components/sections/FAQ";
 import Mission from "@/components/sections/Mission";
+import Footer from "@/components/sections/Footer";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <HowItWorks />
       <FAQ />
       <Mission />
+      <Footer />
     </div>
   );
 }

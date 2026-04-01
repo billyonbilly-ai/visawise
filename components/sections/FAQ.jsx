@@ -52,7 +52,7 @@ export default function FAQ() {
   }
 
   return (
-    <section className="px-3 py-12 min-[1200px]:px-38 lg:py-24">
+    <section id="faq" className="px-3 py-12 min-[1200px]:px-38 lg:py-24">
       <div className="mx-auto max-w-2xl">
         <h2 className="mb-8 text-3xl font-extrabold tracking-tight md:text-4xl">
           FAQ

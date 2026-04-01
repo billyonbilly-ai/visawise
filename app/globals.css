@@ -11,6 +11,9 @@
     background-color: var(--background);
     color: var(--foreground);
   }
+  html {
+    scroll-behavior: smooth;
+  }
 
   input,
   textarea,
