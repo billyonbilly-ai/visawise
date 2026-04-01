@@ -11,7 +11,7 @@ export default function HomeNavbar() {
 
   return (
     <>
-      <nav className="flex w-full items-center justify-between border-b border-black/6 px-8 py-4 min-[1200px]:px-38">
+      <nav className="flex w-full items-center justify-between border-b border-black/6 px-3 py-4 min-[1200px]:px-38">
         {/* 1. Left: Logo (Occupies 1/3 on Desktop) */}
         <div className="flex min-[1001px]:flex-1">
           <Logo href="/" />
