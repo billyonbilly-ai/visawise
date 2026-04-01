@@ -56,7 +56,8 @@ function XIcon({ className = "" }) {
   );
 }
 
-function CircularProgress({ progress, color, icon, size = 52 }) {
+// --- CIRCULAR PROGRESS WITH BACKGROUND FILL ---
+function CircularProgress({ progress, color, bg, icon, size = 52 }) {
   const stroke = 2.8;
   const radius = (size - stroke * 2) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -68,6 +69,9 @@ function CircularProgress({ progress, color, icon, size = 52 }) {
       style={{ width: size, height: size }}
     >
       <svg width={size} height={size} className="absolute inset-0 -rotate-90">
+        {/* Fill Background */}
+        <circle cx={size / 2} cy={size / 2} r={radius} fill={bg} />
+        {/* Track */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -76,6 +80,7 @@ function CircularProgress({ progress, color, icon, size = 52 }) {
           stroke="#e5e5e5"
           strokeWidth={stroke}
         />
+        {/* Progress */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -89,7 +94,10 @@ function CircularProgress({ progress, color, icon, size = 52 }) {
           style={{ transition: "stroke-dashoffset 0.5s ease" }}
         />
       </svg>
-      <div className="relative z-10 text-neutral-600">{icon}</div>
+      {/* Icon inherits the progress color */}
+      <div className="relative z-10" style={{ color: color }}>
+        {icon}
+      </div>
     </div>
   );
 }
@@ -128,34 +136,40 @@ export default function ChecklistClient({ application, initialItems }) {
   const displayStatus =
     status === "preparing" && allMandatoryChecked ? "awaiting" : status;
 
+  // Status config with specific bgColor values to fill the progress circle
   const statusConfig = {
     preparing: {
       label: "Preparing",
       color: "#FACC15",
+      bgColor: "#fefce8",
       bgClass: "bg-yellow-50 text-yellow-500 border border-yellow-200",
       icon: <HourglassIcon className="h-5 w-5" />,
     },
     awaiting: {
       label: "Awaiting submission",
       color: "#FACC15",
+      bgColor: "#fefce8",
       bgClass: "bg-yellow-50 text-yellow-500 border border-yellow-200",
       icon: <HourglassIcon className="h-5 w-5" />,
     },
     submitted: {
       label: "Submitted",
       color: "#f97316",
+      bgColor: "#fff7ed",
       bgClass: "bg-orange-50 text-orange-500 border border-orange-200",
       icon: <HourglassIcon className="h-5 w-5" />,
     },
     approved: {
       label: "Approved",
       color: "#16a34a",
+      bgColor: "#f0faf4",
       bgClass: "bg-[#f0faf4] text-brand-green border border-[#a3d9b8]",
       icon: <CheckIcon className="h-5 w-5" />,
     },
     rejected: {
       label: "Rejected",
       color: "#ef4444",
+      bgColor: "#fef2f2",
       bgClass: "bg-red-50 text-red-500 border border-red-200",
       icon: <XIcon className="h-5 w-5" />,
     },
@@ -258,7 +272,6 @@ export default function ChecklistClient({ application, initialItems }) {
 
   return (
     <div className="px-3 py-8 min-[1200px]:px-38">
-      {/* Back button */}
       <Link href="/dashboard">
         <Button type="outline">
           <svg
@@ -278,7 +291,6 @@ export default function ChecklistClient({ application, initialItems }) {
       </Link>
 
       <div className="mt-6 flex flex-col gap-6 min-[941px]:flex-row min-[941px]:items-start">
-        {/* LEFT — Info card */}
         <div className="w-full min-[941px]:w-1/2">
           <div className="card-shadow flex flex-col gap-4 rounded-lg bg-white px-3 py-3 sm:px-5 sm:py-4">
             <div className="flex items-center justify-between">
@@ -301,11 +313,11 @@ export default function ChecklistClient({ application, initialItems }) {
                   </p>
                 </div>
               </div>
-              {/* Stacked by default (mobile), row on small-medium screens */}
               <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
                 <CircularProgress
                   progress={progress}
                   color={current.color}
+                  bg={current.bgColor}
                   icon={current.icon}
                   size={40}
                 />
@@ -339,7 +351,6 @@ export default function ChecklistClient({ application, initialItems }) {
           </div>
         </div>
 
-        {/* RIGHT — Action panel */}
         <div className="w-full min-[941px]:w-1/2">
           <div className="card-shadow rounded-lg bg-white px-3 py-3 sm:px-5 sm:py-5">
             {(status === "preparing" || status === "submitted") && (

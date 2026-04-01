@@ -7,7 +7,7 @@ const steps = [
     image: "/step1.png",
     title: "Create a Visawise account",
     description:
-      "Sign up in seconds with your email and password to get started. No lengthy forms, no unnecessary details. Just create your account and you're in.",
+      "Sign up in seconds with your email and password to get started.",
   },
   {
     number: "2",
@@ -37,34 +37,33 @@ export default function HowItWorks() {
         </h2>
       </div>
 
-      <div className="flex flex-col gap-8 px-12 sm:px-38 md:px-60 lg:flex-row lg:items-center lg:gap-8 lg:px-0">
+      <div className="flex flex-col gap-8 px-12 sm:px-38 md:px-40 lg:flex-row lg:gap-8 lg:px-0">
         {steps.map((step, index) => (
           <React.Fragment key={step.number}>
-            <div className="card-shadow flex flex-1 flex-col overflow-hidden rounded-2xl bg-white">
-              <div className="m-3 overflow-hidden rounded-xl bg-neutral-100">
-                <Image
-                  src={step.image}
-                  alt={step.title}
-                  width={600}
-                  height={400}
-                  className="h-auto w-full object-cover"
-                />
-              </div>
-              <div className="px-5 pt-2 pb-6">
-                <p className="mb-1.5 text-sm font-bold text-neutral-800">
-                  {step.number}. {step.title}
-                </p>
-                <p className="text-sm leading-relaxed text-neutral-500">
-                  {step.description}
-                </p>
+            <div className="card-shadow flex flex-1 flex-col overflow-hidden rounded-2xl bg-neutral-100 p-1.5">
+              <div className="card-shadow flex h-full flex-1 flex-col overflow-hidden rounded-xl bg-white">
+                <div className="relative aspect-video w-full overflow-hidden border-b border-b-neutral-200 bg-neutral-100">
+                  <Image
+                    src={step.image}
+                    alt={step.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+
+                <div className="px-5 pt-4 pb-6">
+                  <p className="mb-1.5 text-sm font-bold text-neutral-800">
+                    {step.number}. {step.title}
+                  </p>
+                  <p className="text-sm leading-relaxed text-neutral-500">
+                    {step.description}
+                  </p>
+                </div>
               </div>
             </div>
 
             {index < steps.length - 1 && (
-              <div
-                key={`arrow-${index}`}
-                className="flex shrink-0 items-center justify-center py-2 lg:block lg:py-0"
-              >
+              <div className="flex shrink-0 items-center justify-center py-2 lg:block lg:self-center lg:py-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 16 16"
