@@ -20,8 +20,16 @@ export default function HomeNavbar() {
         {/* 2. Middle: Navlinks (Visible only > 1000px) */}
         <div className="hidden flex-1 items-center justify-center min-[1001px]:flex">
           <Link
-            href="/faq"
+            href="/#faq"
             className="text-brand-black text-sm font-medium transition-opacity hover:opacity-70"
+            onClick={(e) => {
+              const el = document.getElementById("faq");
+
+              if (window.location.pathname === "/" && el) {
+                e.preventDefault();
+                el.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
           >
             FAQ
           </Link>
