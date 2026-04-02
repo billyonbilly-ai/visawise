@@ -268,7 +268,7 @@ export default function NewApplicationPage() {
         </div>
 
         <p className="mt-7.5 text-center text-xs text-neutral-500">
-          Need help?{" "}
+          Need help? Email{" "}
           <a
             href="mailto:billy@visawise.ng"
             className="text-brand-black hover:text-brand-green underline transition-colors"

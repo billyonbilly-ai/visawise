@@ -62,10 +62,7 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <a
-                href="mailto:billyonbilly.work@gmail.com?subject=Inquiry"
-                className="hover:text-brand-green"
-              >
+              <a href="/contact" className="hover:text-brand-green">
                 Contact
               </a>
             </li>
@@ -79,12 +76,12 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="/terms" className="hover:text-brand-green">
+              <a href="/legal" className="hover:text-brand-green">
                 Terms of service
               </a>
             </li>
             <li>
-              <a href="/privacy" className="hover:text-brand-green">
+              <a href="/legal" className="hover:text-brand-green">
                 Privacy policy
               </a>
             </li>
