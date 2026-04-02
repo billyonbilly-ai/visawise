@@ -54,7 +54,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="px-8 py-8 pb-16 min-[1200px]:px-38">
+    <div className="px-3 py-8 pb-16 min-[1200px]:px-38">
       {loading ? (
         <Loading />
       ) : (

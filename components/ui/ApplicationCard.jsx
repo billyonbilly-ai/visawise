@@ -224,7 +224,7 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
               <p className="text-xs text-neutral-500">{app.visa_types.name}</p>
             </div>
           </div>
-          <div className="flex items-center justify-end gap-6">
+          <div className="flex items-center justify-end gap-3">
             <CircularProgress
               progress={progress}
               color={current.color}
