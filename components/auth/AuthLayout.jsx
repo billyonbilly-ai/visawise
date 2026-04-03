@@ -11,7 +11,7 @@ export default function AuthLayout({
     <div className="bg-background flex min-h-screen items-center justify-center px-3 py-12 md:px-8">
       <div className="w-full max-w-lg">
         <div className="card-shadow flex flex-col gap-6 rounded-xl bg-white px-5 py-8 md:px-8">
-          <div className="-mb-3 flex">
+          <Link className="-mb-3 flex" href="/">
             <Image
               src="/icon.svg"
               alt="Visawise"
@@ -19,7 +19,7 @@ export default function AuthLayout({
               height={40}
               priority
             />
-          </div>
+          </Link>
           <div className="space-y-3">
             <h1 className="text-brand-black text-xl font-bold">{title}</h1>
             <p className="text-brand-gray text-sm">{subtitle}</p>
