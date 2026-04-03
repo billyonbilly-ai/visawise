@@ -1,6 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import ApplicationCard from "@/components/ui/ApplicationCard";
@@ -8,11 +10,42 @@ import Loading from "@/app/Loading";
 
 const supabase = createClient();
 
+function SectionHeader({ title, count, open, onToggle }) {
+  return (
+    <button
+      onClick={onToggle}
+      className="mb-5 flex w-full items-center justify-between"
+    >
+      <p className="text-md font-semibold">
+        {title}
+        <span className="text-brand-black ml-2 text-sm font-normal">
+          ({count})
+        </span>
+      </p>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        className={`text-brand-black h-5 w-5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      >
+        <path
+          fillRule="evenodd"
+          d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </button>
+  );
+}
+
 export default function DashboardPage() {
+  const router = useRouter();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeOpen, setActiveOpen] = useState(true);
+  const [submittedOpen, setSubmittedOpen] = useState(true);
 
-  async function fetchApplications() {
+  const fetchApplications = useCallback(async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -20,33 +53,39 @@ export default function DashboardPage() {
       .from("applications")
       .select(
         `
-      *,
-      visa_types (
-        name,
-        processing_days,
-        countries ( name, code, flag_emoji )
-      ),
-      checklist_items (
-        id,
-        is_checked,
-        requirements (
-          is_mandatory
+        *,
+        visa_types (
+          name,
+          processing_days,
+          countries ( name, code, flag_emoji )
+        ),
+        checklist_items (
+          id,
+          is_checked,
+          requirements (
+            is_mandatory
+          )
         )
-      )
-    `,
+      `,
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-    setApplications(data || []);
+
+    const apps = data || [];
+    if (apps.length === 0) {
+      router.replace("/dashboard/new");
+      return;
+    }
+    setApplications(apps);
     setLoading(false);
-  }
+  }, [router]);
 
   useEffect(() => {
     async function load() {
       await fetchApplications();
     }
     load();
-  }, []);
+  }, [fetchApplications]);
 
   const active = applications.filter((a) => a.status === "preparing");
   const submitted = applications.filter((a) =>
@@ -65,50 +104,47 @@ export default function DashboardPage() {
             </Button>
           </div>
 
-          {applications.length === 0 && (
-            <div className="rounded-xl border border-dashed border-neutral-300 bg-white py-16 text-center">
-              <p className="mb-3 text-2xl">🗂️</p>
-              <p className="mb-1 text-sm font-medium text-neutral-700">
-                No applications yet
-              </p>
-              <p className="mb-5 text-xs text-neutral-400">
-                Start by creating your first visa checklist
-              </p>
-              <Button type="primary">
-                <Link href="/dashboard/new">+ New application</Link>
-              </Button>
-            </div>
-          )}
-
           {active.length > 0 && (
-            <div className="mb-20">
-              <p className="mb-5 text-sm font-semibold">Ongoing Applications</p>
-              <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2 min-[1490px]:grid-cols-3">
-                {active.map((app) => (
-                  <ApplicationCard
-                    key={app.id}
-                    app={app}
-                    onOutcomeLogged={fetchApplications}
-                  />
-                ))}
-              </div>
+            <div className="mb-10">
+              <SectionHeader
+                title="Ongoing Applications"
+                count={active.length}
+                open={activeOpen}
+                onToggle={() => setActiveOpen((p) => !p)}
+              />
+              {activeOpen && (
+                <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2 min-[1490px]:grid-cols-3">
+                  {active.map((app) => (
+                    <ApplicationCard
+                      key={app.id}
+                      app={app}
+                      onOutcomeLogged={fetchApplications}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {submitted.length > 0 && (
             <div>
-              <p className="mb-5 text-sm font-semibold">
-                Submitted Applications
-              </p>
-              <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2 min-[1490px]:grid-cols-3">
-                {submitted.map((app) => (
-                  <ApplicationCard
-                    key={app.id}
-                    app={app}
-                    onOutcomeLogged={fetchApplications}
-                  />
-                ))}
-              </div>
+              <SectionHeader
+                title="Submitted Applications"
+                count={submitted.length}
+                open={submittedOpen}
+                onToggle={() => setSubmittedOpen((p) => !p)}
+              />
+              {submittedOpen && (
+                <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2 min-[1490px]:grid-cols-3">
+                  {submitted.map((app) => (
+                    <ApplicationCard
+                      key={app.id}
+                      app={app}
+                      onOutcomeLogged={fetchApplications}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </>
