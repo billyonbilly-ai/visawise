@@ -18,7 +18,7 @@ function SectionHeader({ title, count, open, onToggle }) {
     >
       <p className="text-md font-semibold">
         {title}
-        <span className="text-brand-black ml-2 text-sm font-normal">
+        <span className="text-brand-gray ml-2 text-sm font-normal">
           ({count})
         </span>
       </p>
@@ -26,7 +26,7 @@ function SectionHeader({ title, count, open, onToggle }) {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"
         fill="currentColor"
-        className={`text-brand-black h-5 w-5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        className={`text-brand-gray h-5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
       >
         <path
           fillRule="evenodd"
