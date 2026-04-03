@@ -64,3 +64,28 @@
     transform: rotate(360deg);
   }
 }
+@keyframes toast {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px); /* Centers horizontally, starts lower */
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0); /* Centers horizontally, sits at top-6 */
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0); /* Stays centered and visible */
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+      -50%,
+      10px
+    ); /* Centers horizontally, fades out downward */
+  }
+}
+
+.animate-toast {
+  animation: toast 2.5s ease forwards;
+}
