@@ -20,7 +20,9 @@ export default function SettingsPage() {
 
   const [name, setName] = useState(profile?.name || "");
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   async function handleSaveName(e) {
     if (e) e.preventDefault();
@@ -39,20 +41,23 @@ export default function SettingsPage() {
     }));
 
     setSaving(false);
-
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2500);
   }
 
   async function handleDeleteAccount() {
-    const confirmDelete = confirm(
-      "Are you sure you want to delete your account? This cannot be undone.",
-    );
-    if (!confirmDelete) return;
+    setDeleting(true);
 
-    await supabase.from("profiles").delete().eq("id", profile.id);
+    const res = await fetch("/api/delete-account", { method: "DELETE" });
+
+    if (!res.ok) {
+      setDeleting(false);
+      setShowDeleteModal(false);
+      alert("Something went wrong. Please try again.");
+      return;
+    }
+
     await supabase.auth.signOut();
-
     router.push("/");
   }
 
@@ -60,18 +65,60 @@ export default function SettingsPage() {
 
   return (
     <>
+      {/* Toast */}
       {showToast && (
         <div className="animate-toast fixed top-6 left-1/2 z-50">
-          <div className="flex items-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 py-4">
+          <div className="flex items-center gap-2 rounded-lg border border-neutral-300 bg-white px-3 py-3">
             <span className="bg-brand-green flex items-center justify-center rounded-full p-1.5">
               <CheckIcon className="h-4 w-4 text-white" />
             </span>
-            <span className="text-brand-black text-sm">
+            <span className="text-brand-black w-max text-sm">
               Name updated successfully
             </span>
           </div>
         </div>
       )}
+
+      {/* Delete confirmation modal */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-[2px]"
+          onClick={(e) =>
+            e.target === e.currentTarget && setShowDeleteModal(false)
+          }
+        >
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="text-md mb-2 font-semibold text-red-500">
+              Delete account
+            </h2>
+            <p className="mb-6 text-sm leading-relaxed text-red-500">
+              This will permanently delete your account and all your visa
+              applications.{" "}
+              <span className="font-bold">This action cannot be undone.</span>
+            </p>
+            <div className="flex w-full flex-col items-center justify-between gap-3 min-[350px]:flex-row">
+              <Button
+                type="outline"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+                className="w-full disabled:opacity-40"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="outline"
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+                className="w-full border-red-100 text-red-500 transition-colors hover:border-red-200 hover:bg-red-50"
+              >
+                <BinIcon className="h-4 w-4 text-red-500" />
+                {deleting ? "Deleting..." : "Yes, delete"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="px-3 py-12 min-[1200px]:px-38">
         <div className="mx-auto max-w-lg">
           <Link href="/dashboard">
@@ -96,13 +143,10 @@ export default function SettingsPage() {
           </h1>
 
           <div className="flex flex-col gap-6">
-            {/* PROFILE */}
             <div className="card-shadow rounded-xl border bg-white p-5">
               <h2 className="text-brand-black text-md mb-4 font-semibold">
                 Profile
               </h2>
-
-              {/* FIX 1: Form wrapper to enable submitting with 'Enter' */}
               <form
                 onSubmit={handleSaveName}
                 className="flex h-8 items-center gap-3"
@@ -114,7 +158,6 @@ export default function SettingsPage() {
                   onChange={(e) => setName(e.target.value)}
                   className="input-base h-full"
                 />
-
                 <Button
                   type="primary"
                   loading={saving}
@@ -124,7 +167,6 @@ export default function SettingsPage() {
                   Save
                 </Button>
               </form>
-
               <p className="text-brand-gray mt-2 text-xs">{profile.email}</p>
             </div>
 
@@ -132,7 +174,6 @@ export default function SettingsPage() {
               <h2 className="text-brand-black text-md mb-4 font-semibold">
                 Account
               </h2>
-
               <div className="flex flex-col items-start gap-3">
                 <Button
                   onClick={() => router.push("/reset-password")}
@@ -143,7 +184,7 @@ export default function SettingsPage() {
                 </Button>
 
                 <Button
-                  onClick={handleDeleteAccount}
+                  onClick={() => setShowDeleteModal(true)}
                   type="outline"
                   className="border-red-100 text-red-500 transition-colors hover:border-red-200 hover:bg-red-50"
                 >

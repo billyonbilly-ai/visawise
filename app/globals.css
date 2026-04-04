@@ -67,22 +67,19 @@
 @keyframes toast {
   0% {
     opacity: 0;
-    transform: translate(-50%, 10px); /* Centers horizontally, starts lower */
+    transform: translate(-50%, 10px);
   }
   15% {
     opacity: 1;
-    transform: translate(-50%, 0); /* Centers horizontally, sits at top-6 */
+    transform: translate(-50%, 0);
   }
   85% {
     opacity: 1;
-    transform: translate(-50%, 0); /* Stays centered and visible */
+    transform: translate(-50%, 0);
   }
   100% {
     opacity: 0;
-    transform: translate(
-      -50%,
-      10px
-    ); /* Centers horizontally, fades out downward */
+    transform: translate(-50%, 10px);
   }
 }
 
