@@ -176,7 +176,7 @@ export default function SettingsPage() {
               </h2>
               <div className="flex flex-col items-start gap-3">
                 <Button
-                  onClick={() => router.push("/reset-password")}
+                  onClick={() => router.push("/forgot-password")}
                   type="outline"
                 >
                   <EditIcon className="text-brand-black h-4 w-4" />

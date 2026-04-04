@@ -6,6 +6,7 @@ export default function AuthLayout({
   title,
   subtitle,
   isLoginPage = false,
+  isResetPage = false,
 }) {
   return (
     <div className="bg-background flex min-h-screen items-center justify-center px-3 py-12 md:px-8">
@@ -27,16 +28,18 @@ export default function AuthLayout({
           {children}
         </div>
 
-        <p className="mt-8 text-center text-xs text-neutral-400">
-          By {isLoginPage ? "signing in" : "signing up"}, you agree to our{" "}
-          <Link
-            href="/legal"
-            className="text-brand-black font-medium transition-colors hover:underline"
-          >
-            Terms of Service and Privacy Policy
-          </Link>
-          .
-        </p>
+        {!isResetPage && (
+          <p className="mt-8 text-center text-xs text-neutral-400">
+            By {isLoginPage ? "signing in" : "signing up"}, you agree to our{" "}
+            <Link
+              href="/legal"
+              className="text-brand-black font-medium transition-colors hover:underline"
+            >
+              Terms of Service and Privacy Policy
+            </Link>
+            .
+          </p>
+        )}
       </div>
     </div>
   );

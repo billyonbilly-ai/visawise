@@ -25,7 +25,7 @@ export default function SignupPage() {
   const getFriendlyError = (msg) => {
     const m = msg.toLowerCase();
     if (m.includes("already registered") || m.includes("user_already_exists"))
-      return "An account with this email already exists.";
+      return "Unable to create account. You may already have one.";
     if (m.includes("invalid format") || m.includes("valid email"))
       return "Please enter a valid email address.";
     if (m.includes("password should contain"))
@@ -70,12 +70,10 @@ export default function SignupPage() {
       return;
     }
 
-    // If protection is ON and user exists, data.user might be null or
-    // identities array will be empty.
     const userAlreadyExists = data.user?.identities?.length === 0;
 
     if (userAlreadyExists) {
-      setError("An account with this email already exists.");
+      setError("Unable to create account. You may already have one.");
       setLoading(false);
       return;
     }

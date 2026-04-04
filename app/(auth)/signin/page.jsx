@@ -120,9 +120,19 @@ export default function SigninPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-brand-black text-sm font-semibold">
-                Password
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-brand-black text-sm font-semibold">
+                  Password
+                </label>
+
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-neutral-500 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
