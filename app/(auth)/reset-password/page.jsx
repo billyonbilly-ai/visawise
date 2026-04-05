@@ -185,7 +185,6 @@ export default function ResetPasswordPage() {
           <FormAlert message={message} />
 
           <Button
-            type="submit"
             className="mt-2 w-full py-3"
             callback={handleReset}
             loading={loading}

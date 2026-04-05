@@ -7,6 +7,9 @@ const dmSans = DM_Sans({
 });
 
 export const metadata = {
+  icons: {
+    icon: "https://funqfablmmtesjxtbzar.supabase.co/storage/v1/object/public/visawise/icon.png",
+  },
   title: "Visawise",
   description: "Get your visa right the first time",
 };

@@ -56,8 +56,8 @@ export default function SignupPage() {
 
   async function handleSignup() {
     if (!email || !password) return setError("Please fill in all fields.");
-    if (password.length < 8)
-      return setError("Password must be at least 8 characters long.");
+    if (password.length < 6)
+      return setError("Password must be at least 6 characters long.");
 
     setLoading(true);
     setError("");
