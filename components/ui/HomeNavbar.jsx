@@ -35,14 +35,12 @@ export default function HomeNavbar() {
           </Link>
         </div>
 
-        {/* 3. Right: Login Button (Visible only > 1000px) */}
         <div className="hidden flex-1 justify-end min-[1001px]:flex">
           <Button type="outline" href="/signin">
             Log in
           </Button>
         </div>
 
-        {/* 4. Right: Mobile Hamburger (Visible only <= 1000px) */}
         <button
           onClick={toggleSidebar}
           className="text-brand-gray transition-colors hover:text-black min-[1001px]:hidden"

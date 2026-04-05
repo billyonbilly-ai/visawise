@@ -10,6 +10,7 @@ import { useProfile } from "@/context/ProfileContext";
 export default function DashboardNavbar({ user }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const ref = useRef(null);
   const supabase = createClient();
 
@@ -19,6 +20,21 @@ export default function DashboardNavbar({ user }) {
   const displayName = profile?.name || user.email.split("@")[0];
 
   const placeholder = displayName.charAt(0).toUpperCase();
+
+  // Check admin status
+  useEffect(() => {
+    async function checkAdmin() {
+      const { data } = await supabase
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", user.id)
+        .single();
+
+      setIsAdmin(data?.is_admin === true);
+    }
+
+    checkAdmin();
+  }, [user.id, supabase]);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -70,7 +86,7 @@ export default function DashboardNavbar({ user }) {
               </span>
             </div>
 
-            <div className="flex border-b border-black/6 pb-2">
+            <div className="flex flex-col border-b border-black/6 pb-2">
               <Link
                 href="/dashboard/settings"
                 onClick={() => setOpen(false)}
@@ -78,6 +94,16 @@ export default function DashboardNavbar({ user }) {
               >
                 Settings
               </Link>
+
+              {isAdmin && (
+                <Link
+                  href="/dashboard/admin"
+                  onClick={() => setOpen(false)}
+                  className="w-full rounded-lg px-2 py-1.5 text-left text-sm font-medium hover:bg-neutral-100"
+                >
+                  Admin
+                </Link>
+              )}
             </div>
 
             <button

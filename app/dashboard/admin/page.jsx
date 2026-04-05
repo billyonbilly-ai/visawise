@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/utils/supabase/admin-check";
+import AdminDashboardClient from "@/components/admin/AdminDashboardClient";
 
 export default async function AdminPage() {
   const admin = await isAdmin();
@@ -8,9 +9,5 @@ export default async function AdminPage() {
     redirect("/dashboard");
   }
 
-  return (
-    <div>
-      <h1>Admin Dashboard</h1>
-    </div>
-  );
+  return <AdminDashboardClient />;
 }
