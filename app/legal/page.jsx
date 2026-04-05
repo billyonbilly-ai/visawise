@@ -78,10 +78,10 @@ export default function LegalPage() {
           <p className="text-sm text-neutral-600">
             For any questions about these terms, contact:{" "}
             <a
-              href="mailto:billyonbilly.work@gmail.com"
+              href="mailto:billy@visawise.ngk@gmail.com"
               className="font-medium text-neutral-900 underline"
             >
-              billyonbilly.work@gmail.com
+              billy@visawise.ngk@gmail.com
             </a>
           </p>
         </section>

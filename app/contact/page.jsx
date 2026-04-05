@@ -11,7 +11,7 @@ export default function ContactPage() {
         </p>
         <p className="mb-10 max-w-xl text-sm leading-relaxed text-neutral-500">
           Need help, have a question, or want to make an inquiry? Reach out
-          directly to the founder. You’ll get a real response, not a bot.
+          directly to the founder.
         </p>
 
         <div className="flex flex-col gap-4">
@@ -21,9 +21,7 @@ export default function ContactPage() {
               <p className="text-sm font-semibold text-neutral-800">
                 Send an email to
               </p>
-              <p className="text-sm text-neutral-500">
-                billyonbilly.work@gmail.com
-              </p>
+              <p className="text-sm text-neutral-500">billy@visawise.ng</p>
             </div>
           </div>
 
