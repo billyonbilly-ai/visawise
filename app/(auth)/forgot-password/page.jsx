@@ -26,7 +26,8 @@ export default function ForgotPasswordPage() {
     });
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(e) {
+    e?.preventDefault();
     if (!email) {
       setMessage("Please enter your email address.");
       setMessageType("error");
@@ -85,58 +86,60 @@ export default function ForgotPasswordPage() {
       isLoginPage={false}
       isResetPage={true}
     >
-      <fieldset className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-brand-black text-sm font-semibold">
-            Email address
-          </label>
-          <input
-            type="email"
-            placeholder="name@example.com"
-            className="input-base"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <FormAlert message={message} type={messageType} />
-
-        {sent && (
-          <div className="mt-0 flex flex-col items-center gap-2">
-            <p className="text-center text-sm text-neutral-500">
-              Didn’t receive the email? Check your spam folder or resend it.
-            </p>
-
-            <Button
-              className="w-full py-3"
-              callback={handleResend}
-              loading={resending}
-            >
-              Resend email
-            </Button>
+      <form onSubmit={handleSubmit}>
+        <fieldset className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-brand-black text-sm font-semibold">
+              Email address
+            </label>
+            <input
+              type="email"
+              placeholder="name@example.com"
+              className="input-base"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
-        )}
 
-        {!sent && (
-          <Button
-            className="mt-2 w-full py-3"
-            callback={handleSubmit}
-            loading={loading}
-          >
-            Send reset link
-          </Button>
-        )}
+          <FormAlert message={message} type={messageType} />
 
-        <p className="mt-2 text-center text-sm text-neutral-500">
-          Remembered it?{" "}
-          <Link
-            href="/signin"
-            className="text-brand-black font-semibold hover:underline"
-          >
-            Sign in
-          </Link>
-        </p>
-      </fieldset>
+          {sent && (
+            <div className="mt-0 flex flex-col items-center gap-2">
+              <p className="text-center text-sm text-neutral-500">
+                Didn't receive the email? Check your spam folder or resend it.
+              </p>
+
+              <Button
+                className="w-full py-3"
+                callback={handleResend}
+                loading={resending}
+              >
+                Resend email
+              </Button>
+            </div>
+          )}
+
+          {!sent && (
+            <Button
+              className="mt-2 w-full py-3"
+              buttonType="submit"
+              loading={loading}
+            >
+              Send reset link
+            </Button>
+          )}
+
+          <p className="mt-2 text-center text-sm text-neutral-500">
+            Remembered it?{" "}
+            <Link
+              href="/signin"
+              className="text-brand-black font-semibold hover:underline"
+            >
+              Sign in
+            </Link>
+          </p>
+        </fieldset>
+      </form>
     </AuthLayout>
   );
 }

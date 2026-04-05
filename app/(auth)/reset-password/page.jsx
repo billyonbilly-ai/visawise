@@ -26,7 +26,8 @@ export default function ResetPasswordPage() {
     return msg;
   };
 
-  async function handleReset() {
+  async function handleReset(e) {
+    e?.preventDefault();
     if (!password || !confirm) return setMessage("Please fill in both fields.");
     if (password !== confirm) return setMessage("Passwords do not match.");
     if (password.length < 8)
@@ -54,12 +55,7 @@ export default function ResetPasswordPage() {
       isLoginPage={false}
       isResetPage={true}
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleReset();
-        }}
-      >
+      <form onSubmit={handleReset}>
         <fieldset
           disabled={loading}
           className="flex flex-col gap-4 transition-opacity disabled:opacity-60"
@@ -186,7 +182,7 @@ export default function ResetPasswordPage() {
 
           <Button
             className="mt-2 w-full py-3"
-            callback={handleReset}
+            buttonType="submit"
             loading={loading}
           >
             Update password

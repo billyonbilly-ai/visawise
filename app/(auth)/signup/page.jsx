@@ -54,7 +54,8 @@ export default function SignupPage() {
     }
   };
 
-  async function handleSignup() {
+  async function handleSignup(e) {
+    e?.preventDefault();
     if (!email || !password) return setError("Please fill in all fields.");
     if (password.length < 6)
       return setError("Password must be at least 6 characters long.");
@@ -82,7 +83,8 @@ export default function SignupPage() {
     setLoading(false);
   }
 
-  async function handleVerify() {
+  async function handleVerify(e) {
+    e?.preventDefault();
     setLoading(true);
     setError("");
     const { error } = await supabase.auth.verifyOtp({
@@ -114,131 +116,133 @@ export default function SignupPage() {
           : `We sent a code to ${email}.`
       }
     >
-      <fieldset
-        disabled={loading}
-        className="flex flex-col gap-4 transition-opacity disabled:opacity-60"
-      >
-        {step === "signup" ? (
-          <>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-brand-black text-sm font-semibold">
-                Email address
-              </label>
-              <input
-                type="email"
-                placeholder="name@example.com"
-                className={`input-base ${error && (error.includes("email") || !email) ? "border-red-500" : ""}`}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-brand-black text-sm font-semibold">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password (6+ characters)"
-                  className={`input-base ${error && password.length < 8 ? "border-red-500" : ""}`}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="hover:text-brand-green absolute top-1/2 right-3 -translate-y-1/2 text-neutral-400 transition-colors focus:outline-none"
-                >
-                  {showPassword ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.2}
-                      stroke="currentColor"
-                      className="size-5"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 17.772 17.772"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.2}
-                      stroke="currentColor"
-                      className="size-5"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                      />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-          </>
-        ) : (
-          <OtpInput
-            otp={otp}
-            otpRefs={otpRefs}
-            onChange={handleOtpChange}
-            onKeyDown={handleKeyDown}
-            onPaste={handlePaste}
-          />
-        )}
-
-        <FormAlert message={error} />
-
-        <Button
-          className="mt-2 w-full py-3"
-          callback={step === "signup" ? handleSignup : handleVerify}
-          loading={loading}
+      <form onSubmit={step === "signup" ? handleSignup : handleVerify}>
+        <fieldset
+          disabled={loading}
+          className="flex flex-col gap-4 transition-opacity disabled:opacity-60"
         >
-          {step === "signup" ? "Create account" : "Confirm account"}
-        </Button>
+          {step === "signup" ? (
+            <>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-brand-black text-sm font-semibold">
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  placeholder="name@example.com"
+                  className={`input-base ${error && (error.includes("email") || !email) ? "border-red-500" : ""}`}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-brand-black text-sm font-semibold">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password (6+ characters)"
+                    className={`input-base ${error && password.length < 8 ? "border-red-500" : ""}`}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="hover:text-brand-green absolute top-1/2 right-3 -translate-y-1/2 text-neutral-400 transition-colors focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.2}
+                        stroke="currentColor"
+                        className="size-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 17.772 17.772"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.2}
+                        stroke="currentColor"
+                        className="size-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                        />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <OtpInput
+              otp={otp}
+              otpRefs={otpRefs}
+              onChange={handleOtpChange}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+            />
+          )}
 
-        {step === "signup" ? (
-          <p className="mt-2 text-center text-sm text-neutral-500">
-            Already have an account?{" "}
-            <Link
-              href="/signin"
-              className="text-brand-black font-semibold hover:underline"
-            >
-              Sign in
-            </Link>
-          </p>
-        ) : (
-          <div className="mt-2 flex flex-col items-center gap-3">
-            <button
-              type="button"
-              onClick={handleResend}
-              className="text-brand-black text-sm font-medium hover:underline"
-            >
-              Didn't get a code? Resend
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep("signup")}
-              className="text-xs text-neutral-500 hover:underline"
-            >
-              Use a different email
-            </button>
-          </div>
-        )}
-      </fieldset>
+          <FormAlert message={error} />
+
+          <Button
+            className="mt-2 w-full py-3"
+            buttonType="submit"
+            loading={loading}
+          >
+            {step === "signup" ? "Create account" : "Confirm account"}
+          </Button>
+
+          {step === "signup" ? (
+            <p className="mt-2 text-center text-sm text-neutral-500">
+              Already have an account?{" "}
+              <Link
+                href="/signin"
+                className="text-brand-black font-semibold hover:underline"
+              >
+                Sign in
+              </Link>
+            </p>
+          ) : (
+            <div className="mt-2 flex flex-col items-center gap-3">
+              <button
+                type="button"
+                onClick={handleResend}
+                className="text-brand-black text-sm font-medium hover:underline"
+              >
+                Didn't get a code? Resend
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep("signup")}
+                className="text-xs text-neutral-500 hover:underline"
+              >
+                Use a different email
+              </button>
+            </div>
+          )}
+        </fieldset>
+      </form>
     </AuthLayout>
   );
 }
