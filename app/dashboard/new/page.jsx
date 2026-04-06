@@ -1,55 +1,45 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import CustomSelect from "@/components/ui/CustomSelect";
 import Button from "@/components/ui/Button";
+import { useVisaData } from "@/contexts/VisaDataContext";
 
 const supabase = createClient();
 
 export default function NewApplicationPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { countries, getVisaTypesForCountry } = useVisaData();
 
-  const [countries, setCountries] = useState([]);
-  const [visaTypes, setVisaTypes] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedVisaType, setSelectedVisaType] = useState("");
+  const countryParam = searchParams.get("country");
+  const visaParam = searchParams.get("visa");
+
+  const [selectedCountry, setSelectedCountry] = useState(
+    () => countryParam || "",
+  );
+  const [selectedVisaType, setSelectedVisaType] = useState(
+    () => visaParam || "",
+  );
   const [employmentStatus, setEmploymentStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    async function fetchCountries() {
-      const { data } = await supabase
-        .from("countries")
-        .select("*")
-        .eq("is_active", true)
-        .order("name");
-      setCountries(data || []);
-    }
-    fetchCountries();
-  }, []);
+  const visaTypes = useMemo(() => {
+    if (!selectedCountry) return [];
+    return getVisaTypesForCountry(selectedCountry);
+  }, [selectedCountry, getVisaTypesForCountry]);
 
-  useEffect(() => {
-    async function fetchVisaTypes() {
-      if (!selectedCountry) {
-        setVisaTypes([]);
-        setSelectedVisaType("");
-        return;
-      }
-      const { data } = await supabase
-        .from("visa_types")
-        .select("*")
-        .eq("country_id", selectedCountry)
-        .eq("is_active", true)
-        .order("name");
-      setVisaTypes(data || []);
+  const handleCountryChange = (countryId) => {
+    setSelectedCountry(countryId);
+
+    if (countryId !== countryParam) {
       setSelectedVisaType("");
     }
-    fetchVisaTypes();
-  }, [selectedCountry]);
+  };
 
   async function handleSubmit() {
     if (!selectedCountry || !selectedVisaType || !employmentStatus) {
@@ -183,7 +173,6 @@ export default function NewApplicationPage() {
         <div className="card-shadow mt-7.5 flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
           <div className="font-bold">Let's build your checklist</div>
 
-          {/* This fieldset disables all nested inputs when loading is true */}
           <fieldset
             disabled={loading}
             className="group flex flex-col gap-6 transition-opacity duration-300 disabled:opacity-60"
@@ -196,7 +185,7 @@ export default function NewApplicationPage() {
               <CustomSelect
                 options={countryOptions}
                 value={selectedCountry}
-                onChange={setSelectedCountry}
+                onChange={handleCountryChange}
                 placeholder="Select a country..."
                 renderOption={renderCountryOption}
                 renderSelected={renderCountryOption}
@@ -221,7 +210,6 @@ export default function NewApplicationPage() {
               />
             </div>
 
-            {/* Employment status */}
             <div className="flex flex-col gap-1.5">
               <label className="text-brand-black text-sm font-semibold">
                 Employment status

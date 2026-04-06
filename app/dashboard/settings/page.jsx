@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import { useProfile } from "@/context/ProfileContext";
+import { useProfile } from "@/contexts/ProfileContext";
 
 import Link from "next/link";
 

@@ -1,11 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import CustomSelect from "@/components/ui/CustomSelect";
-
-const supabase = createClient();
+import { useVisaData } from "@/contexts/VisaDataContext";
 
 const GlobeIcon = () => (
   <svg
@@ -30,41 +28,21 @@ const getFlagUrl = (code) => {
 };
 
 export default function HeroSection() {
-  const [countries, setCountries] = useState([]);
-  const [visaTypes, setVisaTypes] = useState([]);
+  const { countries, getVisaTypesForCountry } = useVisaData();
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedVisaType, setSelectedVisaType] = useState("");
 
-  useEffect(() => {
-    async function fetchCountries() {
-      const { data } = await supabase
-        .from("countries")
-        .select("*")
-        .eq("is_active", true)
-        .order("code");
-      setCountries(data || []);
-    }
-    fetchCountries();
-  }, []);
+  // Derive visa types from selected country instead of using effect
+  const visaTypes = useMemo(() => {
+    if (!selectedCountry) return [];
+    return getVisaTypesForCountry(selectedCountry);
+  }, [selectedCountry, getVisaTypesForCountry]);
 
-  useEffect(() => {
-    async function fetchVisaTypes() {
-      if (!selectedCountry) {
-        setVisaTypes([]);
-        setSelectedVisaType("");
-        return;
-      }
-      const { data } = await supabase
-        .from("visa_types")
-        .select("*")
-        .eq("country_id", selectedCountry)
-        .eq("is_active", true)
-        .order("name");
-      setVisaTypes(data || []);
-      setSelectedVisaType("");
-    }
-    fetchVisaTypes();
-  }, [selectedCountry]);
+  // Handle country change
+  const handleCountryChange = (countryId) => {
+    setSelectedCountry(countryId);
+    setSelectedVisaType(""); // Reset visa type when country changes
+  };
 
   const countryOptions = countries.map((c) => ({
     value: c.id,
@@ -119,7 +97,7 @@ export default function HeroSection() {
                 <CustomSelect
                   options={countryOptions}
                   value={selectedCountry}
-                  onChange={setSelectedCountry}
+                  onChange={handleCountryChange}
                   placeholder={<GlobeIcon />}
                   renderSelected={renderFlagAndCode}
                   renderOption={renderFlagAndCode}
@@ -135,7 +113,14 @@ export default function HeroSection() {
                 />
               </div>
             </div>
-            <Button className="w-full py-3 text-[16px]" href="/signup">
+            <Button
+              className="w-full py-3 text-[16px]"
+              href={
+                selectedCountry && selectedVisaType
+                  ? `/signup?country=${selectedCountry}&visa=${selectedVisaType}`
+                  : "/signup"
+              }
+            >
               Build my checklist
               <svg
                 xmlns="http://www.w3.org/2000/svg"

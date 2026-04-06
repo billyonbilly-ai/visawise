@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Logo from "./Logo";
 import Link from "next/link";
-import { useProfile } from "@/context/ProfileContext";
+import { useProfile } from "@/contexts/ProfileContext";
 
 export default function DashboardNavbar({ user }) {
   const router = useRouter();

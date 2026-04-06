@@ -1,5 +1,6 @@
 import "./globals.css";
 import { DM_Sans } from "next/font/google";
+import { VisaDataProvider } from "@/contexts/VisaDataContext";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -17,7 +18,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${dmSans.className} antialiased`}>{children}</body>
+      <body className={`${dmSans.className} antialiased`}>
+        <VisaDataProvider>{children}</VisaDataProvider>
+      </body>
     </html>
   );
 }

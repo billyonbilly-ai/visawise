@@ -6,8 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 const ProfileContext = createContext();
 
 export function ProfileProvider({ children }) {
-  const supabase = createClient();
-
+  const [supabase] = useState(() => createClient());
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
