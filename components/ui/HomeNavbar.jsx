@@ -1,42 +1,61 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Logo from "./Logo";
 import Button from "./Button";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function HomeNavbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const handleFaqClick = (e) => {
+    const el = document.getElementById("faq");
+    if (window.location.pathname === "/" && el) {
+      e.preventDefault();
+      if (isOpen) toggleSidebar();
+      el.scrollIntoView({ behavior: "smooth" });
+    } else if (isOpen) {
+      toggleSidebar();
+    }
+  };
+
+  const handleLoginClick = (e) => {
+    if (e) e.preventDefault();
+    if (loading) return;
+
+    if (user) {
+      router.push("/dashboard");
+    } else {
+      router.push("/signin");
+    }
+
+    if (isOpen) setIsOpen(false);
+  };
 
   return (
     <>
       <nav className="flex w-full items-center justify-between border-b border-black/6 px-3 py-4 min-[1200px]:px-38">
-        {/* 1. Left: Logo (Occupies 1/3 on Desktop) */}
         <div className="flex min-[1001px]:flex-1">
           <Logo href="/" />
         </div>
 
-        {/* 2. Middle: Navlinks (Visible only > 1000px) */}
         <div className="hidden flex-1 items-center justify-center min-[1001px]:flex">
           <Link
             href="/#faq"
             className="text-brand-black text-sm font-medium transition-opacity hover:opacity-70"
-            onClick={(e) => {
-              const el = document.getElementById("faq");
-
-              if (window.location.pathname === "/" && el) {
-                e.preventDefault();
-                el.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
+            onClick={handleFaqClick}
           >
             FAQ
           </Link>
         </div>
 
         <div className="hidden flex-1 justify-end min-[1001px]:flex">
-          <Button type="outline" href="/signin">
+          <Button type="outline" callback={handleLoginClick}>
             Log in
           </Button>
         </div>
@@ -63,7 +82,6 @@ export default function HomeNavbar() {
         </button>
       </nav>
 
-      {/* Sidebar Overlay (Mobile Only) */}
       {isOpen && (
         <div
           className="fixed inset-0 z-60 bg-black/10 backdrop-blur-sm transition-opacity min-[1001px]:hidden"
@@ -71,11 +89,8 @@ export default function HomeNavbar() {
         />
       )}
 
-      {/* Sidebar (Mobile Only) */}
       <div
-        className={`bg-brand-background fixed top-0 right-0 z-70 h-full shadow-2xl transition-transform duration-300 ease-in-out min-[1001px]:hidden ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        } w-full md:w-1/2`}
+        className={`bg-brand-background fixed top-0 right-0 z-70 h-full shadow-2xl transition-transform duration-300 ease-in-out min-[1001px]:hidden ${isOpen ? "translate-x-0" : "translate-x-full"} w-full md:w-1/2`}
       >
         <div className="flex flex-col p-8">
           <div className="flex items-center justify-between">
@@ -103,9 +118,9 @@ export default function HomeNavbar() {
 
           <div className="mt-12 flex flex-col gap-6">
             <Link
-              href="/faq"
+              href="/#faq"
               className="text-brand-black text-lg font-medium transition-opacity hover:opacity-70"
-              onClick={toggleSidebar}
+              onClick={handleFaqClick}
             >
               FAQ
             </Link>
@@ -115,11 +130,10 @@ export default function HomeNavbar() {
             <div className="pt-2">
               <Button
                 type="outline"
-                href="/signin"
                 className="w-full"
-                onClick={toggleSidebar}
+                callback={handleLoginClick}
               >
-                Login
+                Log in
               </Button>
             </div>
           </div>

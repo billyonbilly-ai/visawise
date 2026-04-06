@@ -191,9 +191,7 @@ export default function VisaTypesTab() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold">Visa Types</h2>
-          <p className="text-brand-gray mt-1 text-sm">
-            Manage visa categories for each country
-          </p>
+          <p className="text-brand-gray mt-1 text-sm">Visa categories</p>
         </div>
         <Button
           type="primary"

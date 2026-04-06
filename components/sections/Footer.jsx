@@ -50,8 +50,6 @@ export default function Footer() {
                 className="hover:text-brand-green"
                 onClick={(e) => {
                   const el = document.getElementById("faq");
-
-                  // If already on homepage, prevent default and scroll manually
                   if (window.location.pathname === "/" && el) {
                     e.preventDefault();
                     el.scrollIntoView({ behavior: "smooth" });

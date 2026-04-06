@@ -1,15 +1,32 @@
+import Link from "next/link";
+import Button from "@/components/ui/Button";
+
 export default function LegalPage() {
   return (
     <main className="px-3 py-16 min-[1200px]:px-38">
       <div className="mx-auto max-w-3xl">
-        <h1 className="mb-2 text-3xl font-extrabold tracking-tight md:text-5xl">
+        <Link href="/" className="flex w-max">
+          <Button type="outline">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="size-4 rotate-180"
+            >
+              <path
+                fillRule="evenodd"
+                d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z"
+                clipRule="evenodd"
+              />
+            </svg>{" "}
+            Back
+          </Button>
+        </Link>
+
+        <h1 className="mt-7.5 mb-12 text-2xl font-extrabold tracking-tight md:text-3xl">
           Legal
         </h1>
-        <p className="mb-10 text-sm text-neutral-500">
-          Terms of Service and Privacy Policy for Visawise
-        </p>
 
-        {/* TERMS */}
         <section className="mb-12">
           <h2 className="mb-4 text-xl font-bold">Terms of Service</h2>
 
@@ -21,13 +38,19 @@ export default function LegalPage() {
 
             <p>
               Visawise provides guidance and checklist tools for visa
-              applications. We do not guarantee visa approval or act as an
-              immigration authority.
+              applications.{" "}
+              <span className="font-medium text-neutral-900">
+                We do not guarantee visa approval
+              </span>{" "}
+              or act as an immigration authority.
             </p>
 
             <p>
-              You are responsible for the accuracy of the information you
-              provide. Incorrect or incomplete data may affect your experience.
+              <span className="font-medium text-neutral-900">
+                You are responsible for the accuracy
+              </span>{" "}
+              of the information you provide. Incorrect or incomplete data may
+              affect your experience.
             </p>
 
             <p>
@@ -42,7 +65,6 @@ export default function LegalPage() {
           </div>
         </section>
 
-        {/* PRIVACY */}
         <section className="mb-12">
           <h2 className="mb-4 text-xl font-bold">Privacy Policy</h2>
 
@@ -58,7 +80,12 @@ export default function LegalPage() {
               your information.
             </p>
 
-            <p>We do not sell your personal data to third parties.</p>
+            <p>
+              <span className="font-medium text-neutral-900">
+                We do not sell your personal data
+              </span>{" "}
+              to third parties.
+            </p>
 
             <p>
               Aggregated and anonymized data may be used to improve features
@@ -66,22 +93,23 @@ export default function LegalPage() {
             </p>
 
             <p>
-              You can request deletion of your data at any time by contacting
-              us.
+              <span className="font-medium text-neutral-900">
+                You can request deletion of your data
+              </span>{" "}
+              at any time by contacting us.
             </p>
           </div>
         </section>
 
-        {/* CONTACT */}
         <section>
           <h2 className="mb-4 text-xl font-bold">Contact</h2>
           <p className="text-sm text-neutral-600">
             For any questions about these terms, contact:{" "}
             <a
-              href="mailto:billy@visawise.ngk@gmail.com"
-              className="font-medium text-neutral-900 underline"
+              href="mailto:billy@visawise.ng@gmail.com"
+              className="text-base font-medium text-neutral-900 underline"
             >
-              billy@visawise.ngk@gmail.com
+              billy@visawise.ng@gmail.com
             </a>
           </p>
         </section>
