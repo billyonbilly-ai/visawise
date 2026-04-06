@@ -11,9 +11,22 @@ export default async function DashboardLayout({ children }) {
 
   if (!user) redirect("/signin");
 
+  // Fetch the profile name right here on the server
+  const { data: profileData } = await supabase
+    .from("profiles")
+    .select("name")
+    .eq("id", user.id)
+    .single();
+
+  const initialProfile = {
+    id: user.id,
+    email: user.email,
+    name: profileData?.name || null,
+  };
+
   return (
     <div className="min-h-screen">
-      <ProfileProvider>
+      <ProfileProvider initialProfile={initialProfile}>
         <DashboardNavbar user={user} />
         <main>{children}</main>
       </ProfileProvider>

@@ -1,9 +1,11 @@
 "use client";
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import CustomSelect from "@/components/ui/CustomSelect";
 import { useVisaData } from "@/contexts/VisaDataContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const GlobeIcon = () => (
   <svg
@@ -28,6 +30,8 @@ const getFlagUrl = (code) => {
 };
 
 export default function HeroSection() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const { countries, getVisaTypesForCountry } = useVisaData();
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedVisaType, setSelectedVisaType] = useState("");
@@ -40,6 +44,19 @@ export default function HeroSection() {
   const handleCountryChange = (countryId) => {
     setSelectedCountry(countryId);
     setSelectedVisaType("");
+  };
+
+  const handleCtaClick = () => {
+    if (authLoading) return;
+
+    const params = new URLSearchParams();
+    if (selectedCountry) params.set("country", selectedCountry);
+    if (selectedVisaType) params.set("visa", selectedVisaType);
+
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+    const targetPath = user ? "/dashboard/new" : "/signup";
+
+    router.push(`${targetPath}${queryString}`);
   };
 
   const countryOptions = countries.map((c) => ({
@@ -113,11 +130,7 @@ export default function HeroSection() {
             </div>
             <Button
               className="w-full py-3 text-[16px]"
-              href={
-                selectedCountry && selectedVisaType
-                  ? `/signup?country=${selectedCountry}&visa=${selectedVisaType}`
-                  : "/signup"
-              }
+              callback={handleCtaClick}
             >
               Build my checklist
               <svg

@@ -16,7 +16,6 @@ export default function DashboardNavbar({ user }) {
 
   const { profile } = useProfile();
 
-  // 👇 derive display name from global state
   const displayName = profile?.name || user.email.split("@")[0];
 
   const placeholder = displayName.charAt(0).toUpperCase();

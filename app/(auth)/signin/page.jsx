@@ -1,16 +1,17 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import AuthLayout from "@/components/auth/AuthLayout";
 import OtpInput from "@/components/auth/OtpInput";
 import FormAlert from "@/components/auth/FormAlert";
 
-export default function SigninPage() {
+function SigninForm() {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +23,9 @@ export default function SigninPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const countryParam = searchParams.get("country");
+  const visaParam = searchParams.get("visa");
+
   const getFriendlyError = (msg) => {
     const m = msg.toLowerCase();
     if (m.includes("invalid login credentials"))
@@ -31,7 +35,14 @@ export default function SigninPage() {
     return msg;
   };
 
-  // OTP handlers same as Signup
+  const handleRedirect = () => {
+    if (countryParam && visaParam) {
+      router.push(`/dashboard/new?country=${countryParam}&visa=${visaParam}`);
+    } else {
+      router.push("/dashboard");
+    }
+  };
+
   const handleOtpChange = (element, index) => {
     if (isNaN(element.value)) return false;
     const newOtp = [...otp];
@@ -73,7 +84,7 @@ export default function SigninPage() {
       setLoading(false);
       return;
     }
-    router.push("/dashboard");
+    handleRedirect();
   }
 
   async function handleVerify(e) {
@@ -90,7 +101,7 @@ export default function SigninPage() {
       setLoading(false);
       return;
     }
-    router.push("/dashboard");
+    handleRedirect(); // Unified redirect logic
   }
 
   return (
@@ -127,7 +138,6 @@ export default function SigninPage() {
                   <label className="text-brand-black text-sm font-semibold">
                     Password
                   </label>
-
                   <Link
                     href="/forgot-password"
                     className="text-sm text-neutral-500 hover:underline"
@@ -135,7 +145,6 @@ export default function SigninPage() {
                     Forgot password?
                   </Link>
                 </div>
-
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -215,7 +224,11 @@ export default function SigninPage() {
               <>
                 Don't have an account?{" "}
                 <Link
-                  href="/signup"
+                  href={
+                    countryParam && visaParam
+                      ? `/signup?country=${countryParam}&visa=${visaParam}`
+                      : "/signup"
+                  }
                   className="text-brand-black font-semibold hover:underline"
                 >
                   Sign up
@@ -234,5 +247,19 @@ export default function SigninPage() {
         </fieldset>
       </form>
     </AuthLayout>
+  );
+}
+
+export default function SigninPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center">
+          <div className="loader"></div>
+        </div>
+      }
+    >
+      <SigninForm />
+    </Suspense>
   );
 }

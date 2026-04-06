@@ -1,21 +1,24 @@
 "use client";
-
 import { createContext, useContext, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 const ProfileContext = createContext();
 
-export function ProfileProvider({ children }) {
+export function ProfileProvider({ children, initialProfile = null }) {
   const [supabase] = useState(() => createClient());
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(initialProfile);
+
+  // If we have initialProfile, loading is false from the very start
+  const [loading, setLoading] = useState(!initialProfile);
 
   useEffect(() => {
+    // If initialProfile was provided by the server, do nothing.
+    if (initialProfile) return;
+
     async function loadProfile() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-
       if (!user) {
         setLoading(false);
         return;
@@ -32,12 +35,11 @@ export function ProfileProvider({ children }) {
         email: user.email,
         name: data?.name || null,
       });
-
       setLoading(false);
     }
 
     loadProfile();
-  }, [supabase]);
+  }, [supabase, initialProfile]);
 
   return (
     <ProfileContext.Provider value={{ profile, setProfile, loading }}>

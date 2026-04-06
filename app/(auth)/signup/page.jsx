@@ -226,7 +226,11 @@ function SignupForm() {
             <p className="mt-2 text-center text-sm text-neutral-500">
               Already have an account?{" "}
               <Link
-                href="/signin"
+                href={
+                  countryParam && visaParam
+                    ? `/signin?country=${countryParam}&visa=${visaParam}`
+                    : "/signin"
+                }
                 className="text-brand-black font-semibold hover:underline"
               >
                 Sign in
