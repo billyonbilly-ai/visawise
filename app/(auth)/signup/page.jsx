@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import AuthLayout from "@/components/auth/AuthLayout";
 import OtpInput from "@/components/auth/OtpInput";
 import FormAlert from "@/components/auth/FormAlert";
 
-export default function SignupPage() {
+function SignupForm() {
   const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -23,7 +23,6 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Preserve URL params from hero section
   const countryParam = searchParams.get("country");
   const visaParam = searchParams.get("visa");
 
@@ -103,7 +102,6 @@ export default function SignupPage() {
       return;
     }
 
-    // Redirect to /dashboard/new with params if they exist
     if (countryParam && visaParam) {
       router.push(`/dashboard/new?country=${countryParam}&visa=${visaParam}`);
     } else {
@@ -255,5 +253,19 @@ export default function SignupPage() {
         </fieldset>
       </form>
     </AuthLayout>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center">
+          <div className="loader"></div>
+        </div>
+      }
+    >
+      <SignupForm />
+    </Suspense>
   );
 }

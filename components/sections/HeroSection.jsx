@@ -32,16 +32,14 @@ export default function HeroSection() {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedVisaType, setSelectedVisaType] = useState("");
 
-  // Derive visa types from selected country instead of using effect
   const visaTypes = useMemo(() => {
     if (!selectedCountry) return [];
     return getVisaTypesForCountry(selectedCountry);
   }, [selectedCountry, getVisaTypesForCountry]);
 
-  // Handle country change
   const handleCountryChange = (countryId) => {
     setSelectedCountry(countryId);
-    setSelectedVisaType(""); // Reset visa type when country changes
+    setSelectedVisaType("");
   };
 
   const countryOptions = countries.map((c) => ({
