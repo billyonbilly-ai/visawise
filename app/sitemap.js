@@ -1,5 +1,6 @@
 export default function sitemap() {
-  const baseUrl = "https://visawise.ng";
+  const baseUrl = "https://visawiseng.vercel.app";
+
   return [
     {
       url: baseUrl,

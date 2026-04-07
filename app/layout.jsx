@@ -25,7 +25,7 @@ export const metadata = {
       "Visawise | Personalized document checklists tailored to your situation.",
     description:
       "Personalized visa document checklists tailored to your situation.",
-    url: "https://visawise.ng",
+    url: "https://visawiseng.vercel.app",
     siteName: "Visawise",
     images: [
       {
