@@ -4,9 +4,9 @@ export default function DemoSection() {
   return (
     <div className="px-3 pb-12 min-[1200px]:px-38 lg:pb-24">
       <div className="card-shadow rounded-2xl bg-neutral-100 p-1.5">
-        <div className="min-[600px]:hidden">
+        <div className="min-[764px]:hidden">
           <Image
-            src="/dashboard-mobile.jpg"
+            src="/dashboard-mobile.png"
             alt="Visawise dashboard mobile"
             width={800}
             height={1000}
@@ -15,7 +15,7 @@ export default function DemoSection() {
           />
         </div>
 
-        <div className="hidden min-[600px]:block">
+        <div className="hidden min-[764px]:block">
           <Image
             src="/dashboard-desktop.png"
             alt="Visawise dashboard desktop"
