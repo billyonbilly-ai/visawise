@@ -107,7 +107,6 @@ export default function CustomSelect({
                     </span>
                   )}
                 </div>
-                {/* Checkmark removed as requested */}
               </div>
             ))}
           </div>

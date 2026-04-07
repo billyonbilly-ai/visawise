@@ -8,11 +8,9 @@ export function ProfileProvider({ children, initialProfile = null }) {
   const [supabase] = useState(() => createClient());
   const [profile, setProfile] = useState(initialProfile);
 
-  // If we have initialProfile, loading is false from the very start
   const [loading, setLoading] = useState(!initialProfile);
 
   useEffect(() => {
-    // If initialProfile was provided by the server, do nothing.
     if (initialProfile) return;
 
     async function loadProfile() {

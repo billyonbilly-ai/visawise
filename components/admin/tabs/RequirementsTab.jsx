@@ -22,7 +22,6 @@ export default function RequirementsTab() {
     sort_order: 0,
   });
 
-  // reusable
   const fetchData = async () => {
     const [reqData, visaData] = await Promise.all([
       supabase

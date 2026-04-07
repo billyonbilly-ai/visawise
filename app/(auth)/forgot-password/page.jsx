@@ -16,10 +16,6 @@ export default function ForgotPasswordPage() {
   const [messageType, setMessageType] = useState("");
   const [sent, setSent] = useState(false);
 
-  function boldEmail(text) {
-    return <span className="font-bold">{text}</span>;
-  }
-
   async function sendResetEmail() {
     return await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,

@@ -101,7 +101,7 @@ function SigninForm() {
       setLoading(false);
       return;
     }
-    handleRedirect(); // Unified redirect logic
+    handleRedirect();
   }
 
   return (

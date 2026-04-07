@@ -56,7 +56,6 @@ function DotsIcon({ className = "" }) {
   );
 }
 
-// --- CIRCULAR PROGRESS ---
 function CircularProgress({ progress, color, bg, icon, size = 52 }) {
   const stroke = 2.8;
   const radius = (size - stroke * 2) / 2;
@@ -69,9 +68,7 @@ function CircularProgress({ progress, color, bg, icon, size = 52 }) {
       style={{ width: size, height: size }}
     >
       <svg width={size} height={size} className="absolute inset-0 -rotate-90">
-        {/* Fill Background */}
         <circle cx={size / 2} cy={size / 2} r={radius} fill={bg} />
-        {/* Track */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -80,7 +77,6 @@ function CircularProgress({ progress, color, bg, icon, size = 52 }) {
           stroke="#f5f5f5"
           strokeWidth={stroke}
         />
-        {/* Progress */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -94,7 +90,6 @@ function CircularProgress({ progress, color, bg, icon, size = 52 }) {
           style={{ transition: "stroke-dashoffset 0.5s ease" }}
         />
       </svg>
-      {/* Icon in center - inherits the progress color */}
       <div className="relative z-10" style={{ color: color }}>
         {icon}
       </div>
@@ -102,7 +97,6 @@ function CircularProgress({ progress, color, bg, icon, size = 52 }) {
   );
 }
 
-// --- RELATIVE DATE ---
 function relativeDate(dateStr) {
   const date = new Date(dateStr);
   const now = new Date();
@@ -114,7 +108,6 @@ function relativeDate(dateStr) {
   return `Started ${date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined })}`;
 }
 
-// --- MAIN COMPONENT ---
 export default function ApplicationCard({ app, onOutcomeLogged }) {
   const [showModal, setShowModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -144,7 +137,6 @@ export default function ApplicationCard({ app, onOutcomeLogged }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
-  // Status config with matching light backgrounds
   const statusConfig = {
     preparing: {
       label: "Preparing",

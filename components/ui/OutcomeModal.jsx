@@ -1,8 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import CheckIcon from "@/components/icons/CheckIcon";
-import CancelIcon from "@/components/icons/CancelIcon";
+
 import Button from "@/components/ui/Button";
 
 const supabase = createClient();

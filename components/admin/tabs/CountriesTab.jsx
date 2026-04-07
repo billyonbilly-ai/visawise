@@ -19,7 +19,6 @@ export default function CountriesTab() {
     is_active: true,
   });
 
-  // reusable
   const fetchCountries = async () => {
     const { data } = await supabase
       .from("countries")

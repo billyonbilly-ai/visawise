@@ -11,7 +11,6 @@ export default async function DashboardLayout({ children }) {
 
   if (!user) redirect("/signin");
 
-  // Fetch the profile name right here on the server
   const { data: profileData } = await supabase
     .from("profiles")
     .select("name")

@@ -56,7 +56,6 @@ function XIcon({ className = "" }) {
   );
 }
 
-// --- CIRCULAR PROGRESS WITH BACKGROUND FILL ---
 function CircularProgress({ progress, color, bg, icon, size = 52 }) {
   const stroke = 2.8;
   const radius = (size - stroke * 2) / 2;
@@ -69,9 +68,7 @@ function CircularProgress({ progress, color, bg, icon, size = 52 }) {
       style={{ width: size, height: size }}
     >
       <svg width={size} height={size} className="absolute inset-0 -rotate-90">
-        {/* Fill Background */}
         <circle cx={size / 2} cy={size / 2} r={radius} fill={bg} />
-        {/* Track */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -94,7 +91,6 @@ function CircularProgress({ progress, color, bg, icon, size = 52 }) {
           style={{ transition: "stroke-dashoffset 0.5s ease" }}
         />
       </svg>
-      {/* Icon inherits the progress color */}
       <div className="relative z-10" style={{ color: color }}>
         {icon}
       </div>
@@ -136,7 +132,6 @@ export default function ChecklistClient({ application, initialItems }) {
   const displayStatus =
     status === "preparing" && allMandatoryChecked ? "awaiting" : status;
 
-  // Status config with specific bgColor values to fill the progress circle
   const statusConfig = {
     preparing: {
       label: "Preparing",

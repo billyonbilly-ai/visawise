@@ -34,7 +34,6 @@ export function VisaDataProvider({ children }) {
     fetchAllData();
   }, [supabase]);
 
-  // Helper to get visa types for a specific country
   const getVisaTypesForCountry = (countryId) => {
     if (!countryId) return [];
     return allVisaTypes.filter((vt) => vt.country_id === countryId);

@@ -22,7 +22,6 @@ export default function VisaTypesTab() {
     is_active: true,
   });
 
-  // reusable
   const fetchData = async () => {
     const [visaData, countryData] = await Promise.all([
       supabase

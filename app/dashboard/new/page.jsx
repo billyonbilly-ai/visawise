@@ -177,7 +177,6 @@ export default function NewApplicationPage() {
             disabled={loading}
             className="group flex flex-col gap-6 transition-opacity duration-300 disabled:opacity-60"
           >
-            {/* Country */}
             <div className="flex flex-col gap-1.5">
               <label className="text-brand-black text-sm font-semibold">
                 Destination country
@@ -192,7 +191,6 @@ export default function NewApplicationPage() {
               />
             </div>
 
-            {/* Visa type */}
             <div className="flex flex-col gap-1.5">
               <label className="text-brand-black text-sm font-semibold">
                 Visa type
