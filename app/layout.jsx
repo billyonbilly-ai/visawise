@@ -21,7 +21,8 @@ export const metadata = {
     icon: "https://funqfablmmtesjxtbzar.supabase.co/storage/v1/object/public/visawise/icon.png",
   },
   openGraph: {
-    title: "Visawise",
+    title:
+      "Visawise | Personalized document checklists tailored to your situation.",
     description:
       "Personalized visa document checklists tailored to your situation.",
     url: "https://visawise.ng",
@@ -39,7 +40,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Visawise",
+    title:
+      "Visawise | Personalized document checklists tailored to your situation.",
     description:
       "Get your visa right the first time with personalized checklists.",
     creator: "@billyonbilly",
