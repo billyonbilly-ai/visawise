@@ -11,7 +11,8 @@ const dmSans = DM_Sans({
 export const metadata = {
   metadataBase: new URL("https://visawiseng.vercel.app"),
   title: {
-    default: "Visawise | Get your visa right the first time",
+    default:
+      "Visawise | Personalized document checklists tailored to your situation.",
     template: "%s | Visawise",
   },
   description:
