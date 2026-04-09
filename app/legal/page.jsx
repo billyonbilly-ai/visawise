@@ -109,7 +109,7 @@ export default function LegalPage() {
               href="mailto:billy@visawise.ng@gmail.com"
               className="text-base font-medium text-neutral-900 underline"
             >
-              billy@visawise.ng@gmail.com
+              billy@visawise.ng
             </a>
           </p>
         </section>
