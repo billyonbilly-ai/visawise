@@ -13,8 +13,7 @@ export default function Footer() {
             <Logo />
           </div>
           <p className="text-sm text-neutral-600">
-            Helping Nigerian travelers navigate the visa process with clarity,
-            structure, and ease.
+            Personalized document checklists tailored to your situation.
           </p>
           <p className="mt-4 text-xs text-neutral-600">
             © {new Date().getFullYear()} Visawise. All rights reserved.
