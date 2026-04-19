@@ -101,7 +101,7 @@ function Button({
         className={`flex items-center gap-1.5 ${loading ? "invisible" : ""}`}
       >
         {children}
-      </span>{" "}
+      </span>
       {loading && (
         <span className="absolute inset-0 flex items-center justify-center">
           <span
